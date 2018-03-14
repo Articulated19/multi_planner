@@ -27,6 +27,6 @@ void TestStateStar::runTest(int){
 }
 
 void TestStateStar::initTests(){
-    *(cases) = new TestCase(NULL,NULL,NULL,NULL,NULL);
-    *(cases+1) = new TestCase(NULL,NULL,NULL,NULL,NULL);
+    //*(cases) = new TestCase(NULL,NULL,NULL,NULL,NULL);
+    //*(cases+1) = new TestCase(NULL,NULL,NULL,NULL,NULL);
 }

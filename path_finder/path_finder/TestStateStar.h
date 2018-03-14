@@ -10,7 +10,7 @@
 #define TestStateStar_h
 
 #include "TestCase.h"
-#include "lib/StateMatrix.h"
+//#include "lib/StateMatrix.h"
 #include <stdlib.h>
 
 class TestStateStar{

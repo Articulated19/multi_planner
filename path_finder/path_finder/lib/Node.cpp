@@ -10,7 +10,7 @@
 
 
 
-Node::Node(Node** neighbours, Point2D* pos){
+Node::Node(Point2D** neighbours, Point2D* pos){
     this->neighbours = neighbours;
     this->pos = pos;
 }
@@ -19,12 +19,16 @@ Node::~Node(){
     delete neighbours;
 }
 
-Node** Node::getNeighbours(){
+Point2D** Node::getNeighbours(){
     return neighbours;
 }
 
 Point2D* Node::getPosition(){
     return pos;
+}
+
+bool Node::equals(Node* target){
+    return this->pos->equals(target->getPosition());
 }
 
 

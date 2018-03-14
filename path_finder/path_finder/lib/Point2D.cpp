@@ -27,3 +27,7 @@ double Point2D::getX(){
 double Point2D::getY(){
     return y;
 }
+
+bool Point2D::equals(Point2D* target){
+    return this->getX() == target->getX() && this->getY() == target->getY();
+}

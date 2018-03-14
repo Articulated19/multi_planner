@@ -20,6 +20,7 @@ public:
     ~Point2D();
     double getX();
     double getY();
+    bool equals(Point2D*);
 };
 
 

@@ -13,15 +13,16 @@
 
 class Node {
 private:
-    Node** neighbours;
+    Point2D** neighbours;
     Point2D* pos;
     
     
 public:
-    Node(Node**, Point2D*);
+    Node(Point2D**, Point2D*);
     ~Node();
-    Node** getNeighbours();
+    Point2D** getNeighbours();
     Point2D* getPosition();
+    bool equals(Node*);
 };
 
 #endif /* Node_h */
