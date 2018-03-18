@@ -6,6 +6,7 @@
 using namespace std;
 
 Point2D** Gui::paths;
+//sf::Color color;
 //sf::RenderWindow window;
 
 void Gui::createWindow()
@@ -43,8 +44,8 @@ void Gui::createWindow()
 
         //cout <<"drawing at: " << point_x << ", " <<  point_y << "\n";
 
-        sf::RectangleShape pt(sf::Vector2f(15,15));
-        pt.setPosition(point_x,point_y);
+        sf::RectangleShape pt(sf::Vector2f(10,10));
+        pt.setPosition(point_x / 10 - 5,point_y / 10 - 5);
         pt.setFillColor(sf::Color::Green);
         window.draw(pt);
         todraw++;

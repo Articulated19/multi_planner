@@ -8,7 +8,8 @@
 
 #include "Node.h"
 
-
+#include <iostream>
+using namespace std;
 
 Node::Node(Point2D** neighbours, Point2D* pos){
     this->neighbours = neighbours;

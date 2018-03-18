@@ -22,9 +22,12 @@ int main(int argc, const char * argv[]) {
   Gui* gui = new Gui();
   std::thread windowthread(&gui->createWindow);
 
-  planner->getGraphAsPath();
+  //Point2D** path = planner->getGraphAsPath();
+
+  //gui->drawPath(path);
 
   while(1){
+    /*
     cout<<"Start x >> ";
     double startx;
     cin >> startx;
@@ -32,7 +35,7 @@ int main(int argc, const char * argv[]) {
     cout<<"Start y >> ";
     double starty;
     cin >> starty;
-
+    */
     cout<<"Goal x >> ";
     double goalx;
     cin >> goalx;
@@ -41,12 +44,13 @@ int main(int argc, const char * argv[]) {
     double goaly;
     cin >> goaly;
 
+    double startx = 770;
+    double starty = 2406;
+
     Point2D* startpoint = new Point2D(startx, starty);
     Point2D* endpoint   = new Point2D(goalx, goaly);
 
     Point2D** path = planner->getPath(startpoint, endpoint);
-
-    //Point2D** path = planner->getGraphAsPath();
 
     gui->drawPath(path);
 

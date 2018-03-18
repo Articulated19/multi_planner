@@ -10,6 +10,7 @@ class Gui{
   static void drawPath(Point2D**);
 
   static Point2D** paths;
+  //static sf::Color color;
 
 };
 
