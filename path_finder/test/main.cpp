@@ -25,11 +25,11 @@ void toCharArray(string, char*);
 
 int main(int argc, const char * argv[]) {
     Point2D* pos = new Point2D(1,4);
-    Node* n = new Node(NULL, pos);
+    Node* n = new Node(4, pos);
     TestStateStar* test = new TestStateStar();
     StateMatrix* state = new StateMatrix(30,40);
     Graph* g = new Graph(10,3);
-    std::cout << n->getPosition()->getY();
+    std::cout << "ok! \n";
     return 0;
 }
 

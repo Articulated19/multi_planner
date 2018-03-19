@@ -9,9 +9,10 @@
 #include <stdio.h>
 #include "TestCase.h"
 
-TestCase::TestCase(Path* expected, Node* startNode, Node* endNode, StateMatrix* matrix, Pathfinder* action){
+TestCase::TestCase(Path* expected, Node* startNode, Node* endNode, Graph* graph, StateMatrix* matrix, Pathfinder* action){
     this->expected = expected;
     this->startNode = startNode;
+    this->testGraph = graph;
     this->endNode = endNode;
     this->matrix = matrix;
     this->action = action;

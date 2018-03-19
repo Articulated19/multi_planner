@@ -10,18 +10,20 @@
 #define TestCase_h
 #include "../lib/Pathfinder.h"
 #include "../lib/Node.h"
-#include "../lib/StateMatrix.h"
+#include "../lib/StateMatrix.cpp"
+#include "../lib/Graph.h"
 
 class TestCase{
 private:
     Pathfinder* action;
     StateMatrix* matrix;
+    Graph* testGraph;
     Node* startNode;
     Node* endNode;
     Path* result;
     Path* expected;
 public:
-    TestCase(Path*, Node*, Node*, StateMatrix*, Pathfinder*);
+    TestCase(Path*, Node*, Node*, Graph*, StateMatrix*, Pathfinder*);
     ~TestCase();
     bool runTest();
 };

@@ -12,15 +12,20 @@
 #include "TestCase.h"
 //#include "lib/StateMatrix.h"
 #include <stdlib.h>
+#include "../lib/Graph.h"
+#include <vector>
 
 class TestStateStar{
 private:
     TestCase** cases;
+    Graph* testGraph;
     void initTests();
-    
+    void addNode(Node**,int,Point2D**,Point2D*);
+
 public:
     TestStateStar();
     ~TestStateStar();
+    void createGraph(Graph*);
     void runAllTests();
     void runTest(int);
 };
