@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <cmath>
 
 using namespace std;
 
@@ -36,7 +37,7 @@ public:
         break;
       }
       nbours = current->getNeighbours();
-      cout << "checking node: " << current->getPosition()->x << ", " <<current->getPosition()->y <<endl;
+      cout << "checking node: " << current->getPosition()->getX() << ", " <<current->getPosition()->getY() <<endl;
       double h = 10000;
       current = getNode(nbours[0]);
 
@@ -44,7 +45,7 @@ public:
         //if(nbours[n]->getX() < 70) break;
         if(!nbours[n]) break;
         if(nbours[n]->getX() < 70) break;
-        cout << nbours[n]->getX() <<" , " << nbours[n]->y <<endl;;
+        
         double tmp = manhattan_heuristics(nbours[n], endpoint);
         Node* tmpNode = getNode(nbours[n]);
         //cout<< " with heurstics: " <<tmp <<endl;
@@ -78,6 +79,7 @@ public:
 
     //return abs(x) + abs(y);
     return sqrt( pow(x, 2) + pow(y,2));
+
   }
 
   Node* getNode(Point2D* point){

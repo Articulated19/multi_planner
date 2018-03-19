@@ -25,7 +25,7 @@ TestCase::~TestCase(){
 }
 
 bool TestCase::runTest(){
-    result = action->planPath(startNode, endNode, matrix);
+    //result = action->planPath(startNode, endNode, matrix);
     if(expected->equals(result)){
         return true;
     }

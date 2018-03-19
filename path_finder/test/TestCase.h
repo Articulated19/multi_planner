@@ -8,9 +8,9 @@
 
 #ifndef TestCase_h
 #define TestCase_h
-#include "Pathfinder.h"
-#include "Node.h"
-#include "StateMatrix.h"
+#include "../lib/Pathfinder.h"
+#include "../lib/Node.h"
+#include "../lib/StateMatrix.h"
 
 class TestCase{
 private:

@@ -50,6 +50,7 @@ void Gui::createWindow()
         st.setFillColor(sf::Color::White);
         window.draw(st);
 
+
         sf::CircleShape ed(10);
         ed.setPosition(end_x / 10 -10, end_y / 10 -10);
         ed.setFillColor(sf::Color::White);
@@ -64,6 +65,7 @@ void Gui::createWindow()
           int point_x = todraw[i][0]->getX();
           int point_y = todraw[i][0]->getY();
           todraw[i][0] = 0;
+
 
           //cout <<"drawing at: " << point_x << ", " <<  point_y << "\n";
           sf::RectangleShape pt(sf::Vector2f(10,10));

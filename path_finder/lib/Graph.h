@@ -19,7 +19,7 @@ private:
     Node** nodes;
     int nrEdges;
     int nrNodes;
-    
+
 public:
     Graph(int,int);
     ~Graph();

@@ -11,7 +11,7 @@
 
 #include "Path.h"
 #include "Node.h"
-#include "StateMatrix.h"
+//#include "StateMatrix.h"
 
 class Pathfinder{
 public:
@@ -19,7 +19,7 @@ public:
      First arg: start node
      Second arg: end node
      */
-    virtual Path* planPath(Node*, Node*, StateMatrix*);
+//    virtual Path* planPath(Node*, Node*, StateMatrix*);
 };
 
 #endif /* Pathfinder_h */
