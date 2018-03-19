@@ -14,11 +14,11 @@
 using namespace std;
 
 
-#include "lib/Node.h"
-#include "lib/Point2D.h"
+#include "../lib/Node.h"
+#include "../lib/Point2D.h"
 #include "TestStateStar.h"
-#include "lib/StateMatrix.cpp"
-#include "lib/Graph.h"
+#include "../lib/StateMatrix.cpp"
+#include "../lib/Graph.h"
 
 
 void toCharArray(string, char*);

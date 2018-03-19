@@ -8,20 +8,20 @@
 
 #ifndef TestCase_h
 #define TestCase_h
-#include "Pathfinder.h"
-#include "Node.h"
-//#include "StateMatrix.h"
+#include "../lib/Pathfinder.h"
+#include "../lib/Node.h"
+#include "../lib/StateMatrix.h"
 
 class TestCase{
 private:
     Pathfinder* action;
-    //StateMatrix* matrix;
+    StateMatrix* matrix;
     Node* startNode;
     Node* endNode;
     Path* result;
     Path* expected;
 public:
-    //TestCase(Path*, Node*, Node*, StateMatrix*, Pathfinder*);
+    TestCase(Path*, Node*, Node*, StateMatrix*, Pathfinder*);
     ~TestCase();
     bool runTest();
 };
