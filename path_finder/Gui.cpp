@@ -38,8 +38,8 @@ void Gui::createWindow()
       Point2D** todraw = Gui::paths;
 
       while(*todraw){
-        int point_x = todraw[0]->x;
-        int point_y = todraw[0]->y;
+        int point_x = todraw[0]->getX();
+        int point_y = todraw[0]->getY();
         //todraw[0] = 0;
 
         //cout <<"drawing at: " << point_x << ", " <<  point_y << "\n";

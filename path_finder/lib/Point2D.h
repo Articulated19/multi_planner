@@ -10,16 +10,17 @@
 #define Point2D_h
 
 class Point2D{
-public:
+private:
     double x;
     double y;
-
+    
 public:
     Point2D();
     Point2D(double,double);
     ~Point2D();
     double getX();
     double getY();
+    bool equals(Point2D*);
 };
 
 

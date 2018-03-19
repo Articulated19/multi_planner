@@ -8,8 +8,7 @@
 
 #include "Node.h"
 
-#include <iostream>
-using namespace std;
+
 
 Node::Node(Point2D** neighbours, Point2D* pos){
     this->neighbours = neighbours;
@@ -27,3 +26,9 @@ Point2D** Node::getNeighbours(){
 Point2D* Node::getPosition(){
     return pos;
 }
+
+bool Node::equals(Node* target){
+    return this->pos->equals(target->getPosition());
+}
+
+
