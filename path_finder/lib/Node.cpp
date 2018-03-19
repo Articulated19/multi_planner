@@ -13,6 +13,7 @@
 Node::Node(Point2D** neighbours, Point2D* pos){
     this->neighbours = neighbours;
     this->pos = pos;
+    taken = 0;
 }
 
 Node::~Node(){
@@ -25,6 +26,14 @@ Point2D** Node::getNeighbours(){
 
 Point2D* Node::getPosition(){
     return pos;
+}
+
+int Node::isTaken(){
+    return taken;
+}
+
+void Node::take(){
+    taken = 1;
 }
 
 bool Node::equals(Node* target){

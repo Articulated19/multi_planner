@@ -20,10 +20,7 @@ public:
   Point2D* path[313];
 
   Point2D** getPath(Point2D* startpoint, Point2D* endpoint){
-/*
-    path[0] = startpoint;
-    path[1] = endpoint;
-*/
+
     cout << "Getting startnode.."<<endl;
     Node* startnode = getNode(startpoint);
     cout<< "Startnode: " << startnode->getPosition()->getX() << ", " << startnode->getPosition()->getY()<<endl;
@@ -31,16 +28,6 @@ public:
     Node* endnode = getNode(endpoint);
     cout<< "Endnode: " << endnode->getPosition()->getX() << ", " << endnode->getPosition()->getY()<<endl;
 
-/*
-    Point2D** neighbour = startnode->getNeighbours();
-
-    int i = 0;
-    while(neighbour[i]){
-      cout<<"neighbour: " << neighbour[i]->x <<", "<<neighbour[i]->y<<endl;
-      path[i] = neighbour[i];
-      i++;
-    }
-*/
     Node* current = startnode;
     Point2D** nbours;
     int i = 0;
@@ -58,15 +45,29 @@ public:
         //if(nbours[n]->getX() < 70) break;
         if(!nbours[n]) break;
         if(nbours[n]->getX() < 70) break;
-        cout << nbours[n]->getX() <<" , " << nbours[n]->getY();
+        
         double tmp = manhattan_heuristics(nbours[n], endpoint);
-        cout<< " with heurstics: " <<tmp <<endl;
-        if(tmp < h) {
-          h = tmp;
-          current = getNode(nbours[n]);
+        Node* tmpNode = getNode(nbours[n]);
+        //cout<< " with heurstics: " <<tmp <<endl;
+        if(!tmpNode->isTaken()){
+          if(tmp < h) {
+            h = tmp;
+            current = tmpNode;
+          }
+        }
+        else{
+          cout<<"Node was taken!"<<endl;
         }
       }
-      path[i] = current->getPosition();
+      if(!current->isTaken()){
+        current->take();
+        path[i] = current->getPosition();
+      }
+      else{
+        cout << "Could not find a path to goal"<<endl;
+        Gui::drawError(current->getPosition());
+        return path;
+      }
       i++;
     }
     return path;
@@ -75,20 +76,23 @@ public:
   double manhattan_heuristics(Point2D* point, Point2D* goal){
     double x = goal->getX() - point->getX();
     double y = goal->getY() - point->getY();
-    
-    return abs(x) + abs(y);
+
+    //return abs(x) + abs(y);
+    return sqrt( pow(x, 2) + pow(y,2));
+
   }
 
   Node* getNode(Point2D* point){
     //Node* result;
-    double pointX = point->getX();
-    double pointY = point->getY();
-    for(unsigned int i = 0; i < 313 - 1; i++){
-      if(graph[i]->getPosition()->getX() == pointX && graph[i]->getPosition()->getY() == pointY) {
-        return graph[i];
+      double pointX = point->getX();
+      double pointY = point->getY();
+      for(unsigned int i = 0; i < 313 - 1; i++){
+        if(graph[i]->getPosition()->getX() == pointX && graph[i]->getPosition()->getY() == pointY) {
+          return graph[i];
+        }
       }
-    }
-    throw "Could not find node!";
+    cerr<<"Did not find node!"<<endl;
+    return new Node({}, new Point2D(0,0));
   }
 
 
@@ -100,7 +104,6 @@ public:
     }
     return path;
   }
-
 
   void createGraph(){
     ifstream input("graph.txt");
