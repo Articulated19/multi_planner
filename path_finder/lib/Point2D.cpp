@@ -17,7 +17,7 @@ Point2D::Point2D(double x,double y){
     this->y = y;
 }
 Point2D::~Point2D(){
-    
+
 }
 
 double Point2D::getX(){

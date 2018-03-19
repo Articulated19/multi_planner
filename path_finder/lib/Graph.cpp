@@ -7,6 +7,7 @@
 //
 
 #include <stdio.h>
+#include <cmath>
 #include "Graph.h"
 
 Graph::Graph(int nrNodes,int nrEdges){
@@ -33,6 +34,32 @@ int Graph::getCost(Node* from,Node* to){
     return 0;
 }
 
-void Graph::addNode(Node* node,std::tuple<Node*, int>** neighbours){
-    (*this->edgeCosts)[node] = neighbours;
+//TODO: This function should calculate for each neighbour the cost.
+void Graph::addNode(Node* node, Node** neighbours){
+    std::tuple<Node*,int>* arr[sizeof(neighbours)];
+    for(int i = 0; i < sizeof(neighbours); i++){
+      Node* dest = *(neighbours + i);
+      int distance = calcDistance(node,dest);
+      *arr[i] = std::make_tuple(dest,distance);
+    }
+    (*this->edgeCosts)[node] = arr;
+}
+
+/**
+This just returns a straight line distance from those two nodes.
+TODO: implement a counter that counts the amount of nodes between those two nodes.
+**/
+int Graph::calcDistance(Node* from, Node* to){
+  Point2D* fromPoint = from->getPosition();
+  Point2D* toPoint = to->getPosition();
+  return sqrt(pow(fromPoint->getX() - toPoint->getX(),2) +
+  pow(fromPoint->getY() - toPoint->getY(),2));
+}
+
+int Graph::getNrEdges(){
+  return this->nrEdges;
+}
+
+int Graph::getNrNodes(){
+  return this->nrNodes;
 }

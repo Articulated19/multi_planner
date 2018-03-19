@@ -15,13 +15,18 @@ class Node {
 private:
     Point2D** neighbours;
     Point2D* pos;
-    
-    
+    int capacity;
+    int size;
+
+
 public:
     Node(Point2D**, Point2D*);
+    Node(int,Point2D*);
     ~Node();
     Point2D** getNeighbours();
+    Point2D* getNeighbour(int);
     Point2D* getPosition();
+    Node* addNeighbour(Point2D*);
     bool equals(Node*);
 };
 
