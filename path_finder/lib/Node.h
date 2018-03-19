@@ -15,6 +15,7 @@ class Node {
 private:
     Point2D** neighbours;
     Point2D* pos;
+    int taken;
 
 
 public:
@@ -22,6 +23,8 @@ public:
     ~Node();
     Point2D** getNeighbours();
     Point2D* getPosition();
+    int isTaken();
+    void take();
 };
 
 #endif /* Node_h */
