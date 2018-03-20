@@ -45,7 +45,7 @@ public:
         //if(nbours[n]->getX() < 70) break;
         if(!nbours[n]) break;
         if(nbours[n]->getX() < 70) break;
-        
+
         double tmp = manhattan_heuristics(nbours[n], endpoint);
         Node* tmpNode = getNode(nbours[n]);
         //cout<< " with heurstics: " <<tmp <<endl;

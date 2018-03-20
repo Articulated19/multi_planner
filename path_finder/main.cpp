@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cstring>
 #include "multi_planner.cpp"
@@ -19,45 +20,68 @@ int main(int argc, const char * argv[]) {
 
   planner->createGraph();
 
-  Gui* gui = new Gui();
-  std::thread windowthread(&gui->createWindow);
+  if(argc >= 5){
+    double startx = atof(argv[1]);
+    double starty = atof(argv[2]);
+    double goalx  = atof(argv[3]);
+    double goaly  = atof(argv[4]);
 
+    Point2D* startpoint = new Point2D(startx, starty);
+    Point2D* goalpoint  = new Point2D(goalx, goaly);
+
+    Point2D** path = planner->getPath(startpoint, goalpoint);
+
+    ofstream file;
+    file.open("path.txt");
+    while(*path){
+      file<<path[0]->getX() << "," <<path[0]->getY()<<endl;
+      path++;
+    }
+    file.close();
+    cout<<"Path written to file."<<endl;
+
+    return 0;
+  }
   //Point2D** path = planner->getGraphAsPath();
 
   //gui->drawPath(path);
 
-  while(1){
+  if(argc == 1){
+    Gui* gui = new Gui();
+    std::thread windowthread(&gui->createWindow);
 
-    cout<<"Start x >> ";
-    double startx;
-    cin >> startx;
+    while(1){
 
-    cout<<"Start y >> ";
-    double starty;
-    cin >> starty;
+      cout<<"Start x >> ";
+      double startx;
+      cin >> startx;
 
-    cout<<"Goal x >> ";
-    double goalx;
-    cin >> goalx;
+      cout<<"Start y >> ";
+      double starty;
+      cin >> starty;
 
-    cout<<"Goal y >> ";
-    double goaly;
-    cin >> goaly;
+      cout<<"Goal x >> ";
+      double goalx;
+      cin >> goalx;
 
-    //double startx = 770;
-    //double starty = 2406;
+      cout<<"Goal y >> ";
+      double goaly;
+      cin >> goaly;
 
-    Point2D* startpoint = new Point2D(startx, starty);
-    Point2D* endpoint   = new Point2D(goalx, goaly);
-    gui->drawStartEnd(startpoint, endpoint);
+      //double startx = 770;
+      //double starty = 2406;
 
-    Point2D** path = planner->getPath(startpoint, endpoint);
+      Point2D* startpoint = new Point2D(startx, starty);
+      Point2D* endpoint   = new Point2D(goalx, goaly);
+      gui->drawStartEnd(startpoint, endpoint);
 
-    gui->drawPath(path);
+      Point2D** path = planner->getPath(startpoint, endpoint);
 
-    //windowthread.join();
+      gui->drawPath(path);
 
+      //windowthread.join();
+
+    }
   }
-
     return 0;
 }
