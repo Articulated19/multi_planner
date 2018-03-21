@@ -22,6 +22,7 @@ int main(int argc, const char * argv[]) {
   planner->createGraph();
 
   if(argc >= 5){
+    
     double startx = atof(argv[1]);
     double starty = atof(argv[2]);
     double goalx  = atof(argv[3]);

@@ -19,12 +19,12 @@ void Gui::createWindow()
   sf::RenderWindow window(sf::VideoMode(560, 965), "mutli_planner");
   window.setFramerateLimit(20);
   sf::Texture bg;
-
+  /*
   if(!bg.loadFromFile("map_centerline.png"))
   {
     cerr<< "Could not find map";
   }
-
+  */
   sf::Sprite background(bg);
 
   window.clear();
@@ -121,7 +121,7 @@ void Gui::drawPath(Point2D** path)
   //Gui::paths[pathcounter] = path;
   todraw[pathcounter] = path;
   pathcounter++;
-  cout << "Pathcounter: " <<pathcounter<<endl;
+  //cout << "Pathcounter: " <<pathcounter<<endl;
 }
 
 void Gui::drawError(Point2D* err){
