@@ -8,6 +8,7 @@
 #include <sstream>
 #include <cmath>
 #include <algorithm>
+#include <dirent.h>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ public:
   Node* graph[313];
   Point2D* path[313];
 
-  Point2D** getPath(Point2D* startpoint, Point2D* endpoint){
+  Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
 
     //cout << "Getting startnode.."<<endl;
     Node* startnode = getNode(startpoint);
@@ -50,22 +51,23 @@ public:
         double tmp = manhattan_heuristics(nbours[n], endpoint);
         Node* tmpNode = getNode(nbours[n]);
         //cout<< " with heurstics: " <<tmp <<endl;
-        if(!tmpNode->isTaken()){
+        if(!tmpNode->isTaken(id)){
           if(tmp < h) {
             h = tmp;
             current = tmpNode;
           }
         }
         else{
-          cout<<"Node was taken!"<<endl;
+          //cout<<"Node was taken!"<<endl;
         }
       }
-      if(!current->isTaken()){
-        current->take();
+      if(!current->isTaken(id)){
+        current->take(id);
         path[i] = current->getPosition();
       }
       else{
-        cout << "Could not find a path to goal"<<endl;
+        /* Did not find a path to goal */
+        //cout << "Could not find a path to goal"<<endl;
         //Gui::drawError(current->getPosition());
         return path;
       }
@@ -96,6 +98,55 @@ public:
     return new Node({}, new Point2D(0,0));
   }
 
+  void checkTakenNodes(){
+    string pathFiles[10];
+    int filecount = 0;
+
+    DIR *dir;
+    struct dirent *ent;
+    if((dir = opendir("data")) != NULL){
+      while((ent = readdir(dir)) != NULL){
+        string tmp = ent->d_name;
+        if(std::string::npos != tmp.find("path")){
+          pathFiles[filecount] = tmp;
+          filecount++;
+        }
+      }
+      closedir(dir);
+    } else {
+      perror("");
+    }
+    for(int i = 0 ; i < filecount; i++){
+      string filename = "data/" + pathFiles[i];
+      string trimnum = (pathFiles[i].erase(0, 5));
+      string num = trimnum.substr(0, trimnum.length()-4);
+      ifstream input(filename);
+      string wline;
+
+      if(input.is_open()){
+      double pos[5];
+        while(!input.eof()){
+          getline(input, wline);
+          std::replace(wline.begin(), wline.end(), ',' , ' ');
+          stringstream ss(wline);
+          double tmp;
+          int x = 0;
+          while(ss >> tmp){
+            pos[x] = tmp;
+            x++;
+          }
+          Point2D* point = new Point2D(pos[0], pos[1]);
+          //cout<<"pos[0]: "<<pos[0]<< ", pos[1]:" << pos[1]<<endl;
+          Node* node = getNode(point);
+          node->take(stoi(num));
+        }
+        input.close();
+      }
+      else{
+        //cout << "id "<<num<<" has no path yet"<<endl;
+      }
+    }
+  }
 
   Point2D** getGraphAsPath(){
     int i = 0;
@@ -170,42 +221,3 @@ public:
       //cout << "Reading map completed." <<endl;
     }
 };
-
-/*
-    int main(int argc, const char * argv[]){
-      if(argc >= 5){
-        double startx = atof(argv[1]);
-        double starty = atof(argv[2]);
-        double goalx  = atof(argv[3]);
-        double goaly  = atof(argv[4]);
-
-        cout<<"Recieved: "<< startx <<", "<<starty<<" : "<<goalx<<", "<<goaly<<endl;
-
-        Point2D* startpoint = new Point2D(startx, starty);
-        Point2D* goalpoint  = new Point2D(goalx, goaly);
-          std::cout<<"This is what should be returned..."<<endl;
-        multi_planner* mp = new multi_planner();
-        Point2D** refpath = mp->getPath(startpoint, goalpoint);
-
-        while(*refpath){
-          std::cout<<refpath[0]->getX() << "," <<refpath[0]->getY()<<endl;
-          std::cout.flush();
-          refpath++;
-        }
-    }
-    return 0;
-  }
-*/
-
-/*
-#include <boost/python.hpp>
-#include <boost/python/list.hpp>
-#include <boost/python/extract.hpp>
-
-using namespace boost::python;
-BOOST_PYTHON_MODULE(multi_planner){
-  class_<multi_planner>("mutli_planner")
-    .def("createGraph", &multi_planner::createGraph)
-    ;
-};
-*/

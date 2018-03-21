@@ -17,15 +17,15 @@ private:
     Point2D* pos;
     int taken;
 
-    
+
 public:
     Node(Point2D**, Point2D*);
     ~Node();
     Point2D** getNeighbours();
     Point2D* getPosition();
 
-    int isTaken();
-    void take();
+    int isTaken(int);
+    void take(int);
 
     bool equals(Node*);
 

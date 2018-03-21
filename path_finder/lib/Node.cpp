@@ -28,16 +28,22 @@ Point2D* Node::getPosition(){
     return pos;
 }
 
-int Node::isTaken(){
-    return taken;
+int Node::isTaken(int id){
+    if(taken == 0 || taken == id) {
+      return 0;
+    } else {
+      return 1;
+    }
 }
 
-void Node::take(){
-    taken = 1;
+void Node::take(int id){
+    if(taken != 0){
+
+    } else{
+      taken = id;
+    }
 }
 
 bool Node::equals(Node* target){
     return this->pos->equals(target->getPosition());
 }
-
-

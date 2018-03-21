@@ -20,27 +20,34 @@ int main(int argc, const char * argv[]) {
   //std::cout<<"planner spawned"<<endl;
 
   planner->createGraph();
+  planner->checkTakenNodes();
 
   if(argc >= 5){
-    
-    double startx = atof(argv[1]);
-    double starty = atof(argv[2]);
-    double goalx  = atof(argv[3]);
-    double goaly  = atof(argv[4]);
+    int id = stoi(argv[1]);
+    double startx = atof(argv[2]);
+    double starty = atof(argv[3]);
+    double goalx  = atof(argv[4]);
+    double goaly  = atof(argv[5]);
 
     //cout<<"Recieved: "<< startx <<", "<<starty<<" : "<<goalx<<", "<<goaly<<endl;
 
     Point2D* startpoint = new Point2D(startx, starty);
     Point2D* goalpoint  = new Point2D(goalx, goaly);
       //std::cout<<"Attempting to find path: (" << startx << "," <<starty<< ") to (" << goalx<< ", " <<goaly<<")"<<endl;
-    Point2D** path = planner->getPath(startpoint, goalpoint);
+    Point2D** path = planner->getPath(id, startpoint, goalpoint);
+
+    ofstream file;
+    string filename = "data/path_" + to_string(id) + ".txt";
+    file.open(filename);
 
     //std::cout<<"path start";
     while(*path){
+      file<<path[0]->getX() << "," <<path[0]->getY()<<endl;
       std::cout<<path[0]->getX() << "," <<path[0]->getY()<<endl;
       std::cout.flush();
       path++;
     }
+    file.close();
     //std::cout<<"path end";
 
 /*
@@ -60,10 +67,14 @@ int main(int argc, const char * argv[]) {
   //gui->drawPath(path);
 
   if(argc == 1){
+
     Gui* gui = new Gui();
     std::thread windowthread(&gui->createWindow);
 
     while(1){
+      cout<<"Id: >>";
+      int id;
+      cin >> id;
 
       cout<<"Start x >> ";
       double startx;
@@ -88,14 +99,34 @@ int main(int argc, const char * argv[]) {
       Point2D* endpoint   = new Point2D(goalx, goaly);
       gui->drawStartEnd(startpoint, endpoint);
 
-      Point2D** path = planner->getPath(startpoint, endpoint);
+      Point2D** path = planner->getPath(id, startpoint, endpoint);
 
       gui->drawPath(path);
+
+      ofstream file;
+      string filename = "data/path_" + to_string(id) + ".txt";
+      file.open(filename);
+
+      //std::cout<<"path start";
+      while(*path){
+        file<<path[0]->getX() << "," <<path[0]->getY()<<endl;
+        path++;
+      }
+      file.close();
 
       //windowthread.join();
 
     }
   }
+
+  if(argc == 2){
+    std::string input = argv[1];
+    if(input.compare("-clear") == 0){
+      cout<<"Clear data command recieved."<<endl;
+
+    }
+  }
+
   else {
     cout << "Wrong number of arguments" <<endl;
   }
