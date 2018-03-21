@@ -17,7 +17,7 @@ using namespace std;
 int main(int argc, const char * argv[]) {
 
   multi_planner* planner = new multi_planner();
-  std::cout<<"planner spawned"<<endl;
+  //std::cout<<"planner spawned"<<endl;
 
   planner->createGraph();
 
@@ -31,16 +31,18 @@ int main(int argc, const char * argv[]) {
 
     Point2D* startpoint = new Point2D(startx, starty);
     Point2D* goalpoint  = new Point2D(goalx, goaly);
-      std::cout<<"This is what should be returned..."<<endl;
+      //std::cout<<"Attempting to find path: (" << startx << "," <<starty<< ") to (" << goalx<< ", " <<goaly<<")"<<endl;
     Point2D** path = planner->getPath(startpoint, goalpoint);
 
+    //std::cout<<"path start";
     while(*path){
       std::cout<<path[0]->getX() << "," <<path[0]->getY()<<endl;
       std::cout.flush();
       path++;
     }
+    //std::cout<<"path end";
 
-
+/*
     ofstream file;
     file.open("path0.txt");
     while(*path){
@@ -49,7 +51,7 @@ int main(int argc, const char * argv[]) {
     }
     file.close();
     cout<<"Path written to file."<<endl;
-    
+*/
     return 0;
   }
   //Point2D** path = planner->getGraphAsPath();
