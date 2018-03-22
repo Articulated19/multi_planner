@@ -120,10 +120,23 @@ int main(int argc, const char * argv[]) {
   }
 
   if(argc == 2){
-    std::string input = argv[1];
-    if(input.compare("-clear") == 0){
-      cout<<"Clear data command recieved."<<endl;
+    std::string cmd = argv[1];
+    if(cmd.compare("-clear") == 0){
+      system("exec rm -r data/*");
+      cout << "Cleared path data"<<endl;
+    }
+  }
 
+  if(argc == 3){
+    std::string cmd = argv[2];
+    std::string input = argv[1];
+    if(cmd.compare("-clear") == 0){
+      string filename = "data/path_" + input + ".txt";
+      if(remove(filename.c_str()) != 0){
+        cout << "Error deleting file"<<endl;
+      } else{
+        cout << "Cleared "<<filename <<endl;
+      }
     }
   }
 
