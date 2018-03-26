@@ -40,10 +40,10 @@ void Gui::createWindow()
     //window.draw(background);
 
     if(pathcounter > 0){
-        int start_x = startend[0]->getX();
-        int start_y = startend[0]->getY();
-        int end_x   = startend[1]->getX();
-        int end_y   = startend[1]->getY();
+        int start_x = startend[0]->getX() * 10;
+        int start_y = startend[0]->getY() * 10;
+        int end_x   = startend[1]->getX() * 10;
+        int end_y   = startend[1]->getY() * 10;
 
         sf::CircleShape st(10);
         st.setPosition(start_x / 10 -10, start_y / 10 -10);
@@ -62,8 +62,8 @@ void Gui::createWindow()
     //if(Gui::paths[i]){
       if(todraw[i]){
         while(*todraw[i]){
-          int point_x = todraw[i][0]->getX();
-          int point_y = todraw[i][0]->getY();
+          int point_x = todraw[i][0]->getX() *10;
+          int point_y = todraw[i][0]->getY() *10;
           todraw[i][0] = 0;
 
 
@@ -100,8 +100,8 @@ void Gui::createWindow()
         //Gui::paths[i] = 0;
       }
       for(int i = 0; i < errorcount ; i++){
-        int point_x = errors[i]->getX();
-        int point_y = errors[i]->getY();
+        int point_x = errors[i]->getX() * 10;
+        int point_y = errors[i]->getY() * 10;
 
         sf::RectangleShape er(sf::Vector2f(10,10));
         er.setPosition(point_x / 10 -5, point_y / 10 -5);

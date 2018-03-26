@@ -17,6 +17,7 @@ using namespace std;
 int main(int argc, const char * argv[]) {
 
   multi_planner* planner = new multi_planner();
+  std::cout<<"planner spawned"<<endl;
 
   planner->createGraph();
 
@@ -26,20 +27,29 @@ int main(int argc, const char * argv[]) {
     double goalx  = atof(argv[3]);
     double goaly  = atof(argv[4]);
 
+    //cout<<"Recieved: "<< startx <<", "<<starty<<" : "<<goalx<<", "<<goaly<<endl;
+
     Point2D* startpoint = new Point2D(startx, starty);
     Point2D* goalpoint  = new Point2D(goalx, goaly);
-
+      std::cout<<"This is what should be returned..."<<endl;
     Point2D** path = planner->getPath(startpoint, goalpoint);
 
+    while(*path){
+      std::cout<<path[0]->getX() << "," <<path[0]->getY()<<endl;
+      std::cout.flush();
+      path++;
+    }
+
+
     ofstream file;
-    file.open("path.txt");
+    file.open("path0.txt");
     while(*path){
       file<<path[0]->getX() << "," <<path[0]->getY()<<endl;
       path++;
     }
     file.close();
     cout<<"Path written to file."<<endl;
-
+    
     return 0;
   }
   //Point2D** path = planner->getGraphAsPath();
@@ -83,5 +93,9 @@ int main(int argc, const char * argv[]) {
 
     }
   }
+  else {
+    cout << "Wrong number of arguments" <<endl;
+  }
+
     return 0;
-}
+};

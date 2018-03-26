@@ -7,10 +7,11 @@
 #include <vector>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
-#include "Gui.h"
+//#include "Gui.h"
 #include "lib/Node.cpp"
 
 class multi_planner{
@@ -21,12 +22,12 @@ public:
 
   Point2D** getPath(Point2D* startpoint, Point2D* endpoint){
 
-    cout << "Getting startnode.."<<endl;
+    //cout << "Getting startnode.."<<endl;
     Node* startnode = getNode(startpoint);
-    cout<< "Startnode: " << startnode->getPosition()->getX() << ", " << startnode->getPosition()->getY()<<endl;
+    //cout<< "Startnode: " << startnode->getPosition()->getX() << ", " << startnode->getPosition()->getY()<<endl;
 
     Node* endnode = getNode(endpoint);
-    cout<< "Endnode: " << endnode->getPosition()->getX() << ", " << endnode->getPosition()->getY()<<endl;
+    //cout<< "Endnode: " << endnode->getPosition()->getX() << ", " << endnode->getPosition()->getY()<<endl;
 
     Node* current = startnode;
     Point2D** nbours;
@@ -37,7 +38,7 @@ public:
         break;
       }
       nbours = current->getNeighbours();
-      cout << "checking node: " << current->getPosition()->getX() << ", " <<current->getPosition()->getY() <<endl;
+      //cout << "checking node: " << current->getPosition()->getX() << ", " <<current->getPosition()->getY() <<endl;
       double h = 10000;
       current = getNode(nbours[0]);
 
@@ -65,7 +66,7 @@ public:
       }
       else{
         cout << "Could not find a path to goal"<<endl;
-        Gui::drawError(current->getPosition());
+        //Gui::drawError(current->getPosition());
         return path;
       }
       i++;
@@ -91,7 +92,7 @@ public:
           return graph[i];
         }
       }
-    cerr<<"Did not find node!"<<endl;
+    //cerr<<"Did not find node!"<<endl;
     return new Node({}, new Point2D(0,0));
   }
 
@@ -141,7 +142,7 @@ public:
             double tmp;
             int j = 0;
             while(ss >> tmp){
-              pos[j] = tmp;
+              pos[j] = tmp / 10;
               j++;
             }
             for(int n = 0 ; n < j; n += 2){
@@ -166,6 +167,45 @@ public:
           x++;
         }
       }
-      cout << "Reading map completed." <<endl;
+      //cout << "Reading map completed." <<endl;
     }
 };
+
+/*
+    int main(int argc, const char * argv[]){
+      if(argc >= 5){
+        double startx = atof(argv[1]);
+        double starty = atof(argv[2]);
+        double goalx  = atof(argv[3]);
+        double goaly  = atof(argv[4]);
+
+        cout<<"Recieved: "<< startx <<", "<<starty<<" : "<<goalx<<", "<<goaly<<endl;
+
+        Point2D* startpoint = new Point2D(startx, starty);
+        Point2D* goalpoint  = new Point2D(goalx, goaly);
+          std::cout<<"This is what should be returned..."<<endl;
+        multi_planner* mp = new multi_planner();
+        Point2D** refpath = mp->getPath(startpoint, goalpoint);
+
+        while(*refpath){
+          std::cout<<refpath[0]->getX() << "," <<refpath[0]->getY()<<endl;
+          std::cout.flush();
+          refpath++;
+        }
+    }
+    return 0;
+  }
+*/
+
+/*
+#include <boost/python.hpp>
+#include <boost/python/list.hpp>
+#include <boost/python/extract.hpp>
+
+using namespace boost::python;
+BOOST_PYTHON_MODULE(multi_planner){
+  class_<multi_planner>("mutli_planner")
+    .def("createGraph", &multi_planner::createGraph)
+    ;
+};
+*/
