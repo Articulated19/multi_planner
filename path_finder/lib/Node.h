@@ -21,12 +21,13 @@ private:
 
 public:
     Node(Point2D**, Point2D*);
-    Node(int,Point2D*);
+    Node(int,Point2D*&);
     ~Node();
     Point2D** getNeighbours();
     Point2D* getNeighbour(int);
     Point2D* getPosition();
-    Node* addNeighbour(Point2D*);
+    void addNeighbour(Point2D*&);
+    int getNrNeighbours();
     bool equals(Node*);
 };
 

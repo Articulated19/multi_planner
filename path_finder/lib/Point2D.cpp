@@ -31,3 +31,7 @@ double Point2D::getY(){
 bool Point2D::equals(Point2D* target){
     return this->getX() == target->getX() && this->getY() == target->getY();
 }
+
+std::string Point2D::toString(){
+  return "(" + std::to_string(this->getX()) + "," + std::to_string(this->getY()) + ")";
+}

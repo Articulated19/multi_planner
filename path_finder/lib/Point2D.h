@@ -9,6 +9,10 @@
 #ifndef Point2D_h
 #define Point2D_h
 #include <string>
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <cstring>
 
 class Point2D{
 private:
@@ -22,6 +26,7 @@ public:
     double getX();
     double getY();
     bool equals(Point2D*);
+    std::string toString();
 };
 
 

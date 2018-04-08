@@ -17,7 +17,7 @@ Node::Node(Point2D** neighbours, Point2D* pos){
     this->size = capacity;
 }
 
-Node::Node(int nrOfNeighbours, Point2D* pos){
+Node::Node(int nrOfNeighbours, Point2D* &pos){
   Point2D* neighbours[nrOfNeighbours];
   this->neighbours = neighbours;
   this->pos = pos;
@@ -41,11 +41,15 @@ Point2D* Node::getPosition(){
     return pos;
 }
 
-Node* Node::addNeighbour(Point2D* neighbour){
-  if(capacity != size){
+void Node::addNeighbour(Point2D* &neighbour){
+  if(this->capacity != this->size){
     this->neighbours[capacity] = neighbour;
+    this->capacity++;
   }
-  return this;
+}
+
+int Node::getNrNeighbours(){
+  return this->size;
 }
 
 bool Node::equals(Node* target){

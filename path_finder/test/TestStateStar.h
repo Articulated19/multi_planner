@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include "../lib/Graph.h"
 #include <vector>
+#include <map>
 
 class TestStateStar{
 private:
@@ -21,6 +22,8 @@ private:
     Graph* testGraph;
     void initTests();
     void addNode(Node**,int,Point2D**,Point2D*);
+    Node** createNodes();
+    void initNeighbours(Node**);
 
 public:
     TestStateStar();
