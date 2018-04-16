@@ -76,7 +76,36 @@ public:
     return path;
   }
   
-  Point2D** beamSearch(){
+  Point2D** beamSearch(int id, int beamSize, Point2D* startpoint, Point2D* endpoint){
+    Node* startnode = getNode(startpoint);
+    Node* endnode = getNode(endpoint);
+    int g = 0;
+    std::vector<Node*> beam;
+    auto it = beam.begin();
+    //beam[0] = startnode;
+    it = beam.insert(it,startnode);
+    int beamCapacity = 1;
+    Node* current;
+    while(beam.size()){
+        //1.Remove the best node from beam to current
+		    current = beam[0];
+        //int i;
+        for(std::vector<Node*>::iterator i = beam.begin(); i != beam.end(); ++i){
+          //if(manhattan_heuristics(beam[i],endnode) < manhattan_heuristics(current,endnode)){
+            //current = beam[i];
+          //}
+        //}
+        
+    }
+
+        //2.If we find a goal then we backtrace back to the start and return path
+
+        //3.Get neighbors from current
+
+        //4.Add each successor to beam and record it's parent
+		
+        //5.If size of beam > beamSize then remove the largest elements from beam.
+    return path; // Found no path
 
   }
 

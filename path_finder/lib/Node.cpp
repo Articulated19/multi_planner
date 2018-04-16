@@ -44,6 +44,10 @@ void Node::take(int id){
     }
 }
 
+void Node::setParent(Node* parent){
+	this->parent = parent;
+}
+
 bool Node::equals(Node* target){
     return this->pos->equals(target->getPosition());
 }

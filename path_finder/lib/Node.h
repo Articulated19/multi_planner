@@ -15,6 +15,7 @@ class Node {
 private:
     Point2D** neighbours;
     Point2D* pos;
+    Node* parent;
     int taken;
 
 
@@ -28,7 +29,7 @@ public:
     void take(int);
 
     bool equals(Node*);
-
+    void setParent(Node*);
 };
 
 #endif /* Node_h */
