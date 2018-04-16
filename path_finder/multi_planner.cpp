@@ -75,6 +75,10 @@ public:
     }
     return path;
   }
+  
+  Point2D** beamSearch(){
+
+  }
 
   double manhattan_heuristics(Point2D* point, Point2D* goal){
     double x = goal->getX() - point->getX();

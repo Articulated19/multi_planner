@@ -20,7 +20,7 @@ int main(int argc, const char * argv[]) {
   //std::cout<<"planner spawned"<<endl;
 
   planner->createGraph();
-  planner->checkTakenNodes();
+  //planner->checkTakenNodes();
 
   if(argc >= 5){
     int id = stoi(argv[1]);
