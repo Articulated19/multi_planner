@@ -75,7 +75,7 @@ public:
     }
     return path;
   }
-  
+
   Point2D** beamSearch(int id, int beamSize, Point2D* startpoint, Point2D* endpoint){
     Node* startnode = getNode(startpoint);
     Node* endnode = getNode(endpoint);
@@ -88,14 +88,17 @@ public:
     Node* current;
     while(beam.size()){
         //1.Remove the best node from beam to current
-		    current = beam[0];
+		    current = beam.front();
         //int i;
         for(std::vector<Node*>::iterator i = beam.begin(); i != beam.end(); ++i){
-          //if(manhattan_heuristics(beam[i],endnode) < manhattan_heuristics(current,endnode)){
+          Point2D* p = (*i)->getPosition();
+          cout << p->getX() << endl;
+          break;
+          //if(fvalue(beam[i],endnode) < fvalue(current,endnode)){
             //current = beam[i];
           //}
-        //}
-        
+        }
+        break;
     }
 
         //2.If we find a goal then we backtrace back to the start and return path
@@ -107,6 +110,16 @@ public:
         //5.If size of beam > beamSize then remove the largest elements from beam.
     return path; // Found no path
 
+  }
+
+  double fvalue(Point2D* current, Point2D* point, Point2D* goal){
+    return manhattan_heuristics(point, goal) + meeting_avoidance(current, point);
+  }
+
+  //TODO Implement this function so it gives high value if it is a big chance that the cars will meet at
+  // point go_to
+  double meeting_avoidance(Point2D* current, Point2D* go_to){
+    return 0;
   }
 
   double manhattan_heuristics(Point2D* point, Point2D* goal){
