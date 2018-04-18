@@ -9,6 +9,7 @@
 #include <cmath>
 #include <algorithm>
 #include <dirent.h>
+#include <queue>
 
 using namespace std;
 
@@ -76,38 +77,31 @@ public:
     return path;
   }
 
+  struct NodeCompare{
+    bool operator()(Node* n1, Node* n2){
+      return n1->getCurrentFvalue() > n2->getCurrentFvalue();
+    }
+  };
+
   Point2D** beamSearch(int id, int beamSize, Point2D* startpoint, Point2D* endpoint){
     Node* startnode = getNode(startpoint);
     Node* endnode = getNode(endpoint);
     int g = 0;
-    std::vector<Node*> beam;
-    auto it = beam.begin();
-    //beam[0] = startnode;
-    it = beam.insert(it,startnode);
-    int beamCapacity = 1;
+    priority_queue<Node*, vector<Node*>, NodeCompare> beam;
     Node* current;
-    while(beam.size()){
-        //1.Remove the best node from beam to current
-		    current = beam.front();
-        //int i;
-        for(std::vector<Node*>::iterator i = beam.begin(); i != beam.end(); ++i){
-          Point2D* p = (*i)->getPosition();
-          cout << p->getX() << endl;
-          break;
-          //if(fvalue(beam[i],endnode) < fvalue(current,endnode)){
-            //current = beam[i];
-          //}
-        }
-        break;
-    }
+    while(/*beam.size()*/ 1){
+      //1.Remove the best node from the beam
+      current = beam.top();
+      beam.pop();
 
-        //2.If we find a goal then we backtrace back to the start and return path
+      //2.If we find a goal then we backtrace back to the start and return path
 
-        //3.Get neighbors from current
+      //3.Get neighbors from current
 
-        //4.Add each successor to beam and record it's parent
+      //4.Add each successor to beam and record it's parent
 		
-        //5.If size of beam > beamSize then remove the largest elements from beam.
+      //5.If size of beam > beamSize then remove the largest elements from beam.
+    }
     return path; // Found no path
 
   }

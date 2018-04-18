@@ -48,6 +48,14 @@ void Node::setParent(Node* parent){
 	this->parent = parent;
 }
 
+void Node::setCurrentFvalue(double value){
+  currentFvalue = value;
+}
+
+double Node::getCurrentFvalue(){
+  return currentFvalue;
+}
+
 bool Node::equals(Node* target){
     return this->pos->equals(target->getPosition());
 }

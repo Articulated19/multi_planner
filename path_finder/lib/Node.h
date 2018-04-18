@@ -16,6 +16,7 @@ private:
     Point2D** neighbours;
     Point2D* pos;
     Node* parent;
+    double currentFvalue;
     int taken;
 
 
@@ -27,6 +28,8 @@ public:
 
     int isTaken(int);
     void take(int);
+    void setCurrentFvalue(double);
+    double getCurrentFvalue();
 
     bool equals(Node*);
     void setParent(Node*);
