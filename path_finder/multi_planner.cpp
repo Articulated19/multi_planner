@@ -85,25 +85,65 @@ public:
 
   Point2D** beamSearch(int id, int beamSize, Point2D* startpoint, Point2D* endpoint){
     Node* startnode = getNode(startpoint);
-    Node* endnode = getNode(endpoint);
+    startnode->setCurrentFvalue(manhattan_heuristics(startpoint,endpoint));
+    //Node* endnode = getNode(endpoint);
     int g = 0;
     priority_queue<Node*, vector<Node*>, NodeCompare> beam;
+    beam.push(startnode);
     Node* current;
-    while(/*beam.size()*/ 1){
+    int pathsize = 0;
+    while(beam.size()){
       //1.Remove the best node from the beam
       current = beam.top();
       beam.pop();
-
       //2.If we find a goal then we backtrace back to the start and return path
-
+      if(current->getPosition()->equals(endpoint))
+        return backtrace(startnode,current);
       //3.Get neighbors from current
+      Point2D** neighbors = current->getNeighbours();
 
+      //TODO Fix this we have segmantation fault
       //4.Add each successor to beam and record it's parent
-		
+		  /*for(int i = 0; i < sizeof(neighbors)/sizeof(neighbors[0]); i++){
+        Node* succ = getNode(*(neighbors+i));
+        succ->setParent(current);
+        succ->setCurrentFvalue(fvalue(current->getPosition(),*(neighbors+i),endpoint));
+        beam.push(succ);
+      }*/
+      //Point2D* curNeighbor = *neighbors;
+      while(*neighbors != NULL){
+        Node* succ = getNode(*neighbors);
+        succ->setParent(current);
+        succ->setCurrentFvalue(fvalue(current->getPosition(),*neighbors,endpoint));
+        beam.push(succ);
+        neighbors++;
+      }
+      cout<<"Here I am!"<<endl;
       //5.If size of beam > beamSize then remove the largest elements from beam.
+      if(beam.size() > beamSize){
+        priority_queue<Node*, vector<Node*>, NodeCompare> temp;
+        for(int i = 0; i < beamSize; i++){
+          temp.push(beam.top());
+          beam.pop();
+        }
+        beam.swap(temp);
+      }
     }
     return path; // Found no path
 
+  }
+
+  //TODO Implement an algorithm that backtrace from a node to their parrent.
+  Point2D** backtrace(Node* startNode, Node* goalNode){
+    int pathSize = goalNode->getTreeSize();
+    Point2D* newPath[pathSize];
+    pathSize--;
+    Node* current = goalNode;
+    while(!goalNode->equals(startNode)){
+      newPath[pathSize--] = current->getPosition();
+      current = current->getParent();
+    }
+    return newPath;
   }
 
   double fvalue(Point2D* current, Point2D* point, Point2D* goal){

@@ -14,6 +14,7 @@ Node::Node(Point2D** neighbours, Point2D* pos){
     this->neighbours = neighbours;
     this->pos = pos;
     taken = 0;
+    treeSize = 1;
 }
 
 Node::~Node(){
@@ -36,6 +37,10 @@ int Node::isTaken(int id){
     }
 }
 
+int Node::getTreeSize(){
+  return treeSize;
+}
+
 void Node::take(int id){
     if(taken != 0){
 
@@ -46,6 +51,11 @@ void Node::take(int id){
 
 void Node::setParent(Node* parent){
 	this->parent = parent;
+  treeSize += parent->treeSize;
+}
+
+Node* Node::getParent(){
+  return parent;
 }
 
 void Node::setCurrentFvalue(double value){

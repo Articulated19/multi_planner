@@ -16,6 +16,7 @@ private:
     Point2D** neighbours;
     Point2D* pos;
     Node* parent;
+    int treeSize;
     double currentFvalue;
     int taken;
 
@@ -27,12 +28,14 @@ public:
     Point2D* getPosition();
 
     int isTaken(int);
+    int getTreeSize();
     void take(int);
     void setCurrentFvalue(double);
     double getCurrentFvalue();
 
     bool equals(Node*);
     void setParent(Node*);
+    Node* getParent();
 };
 
 #endif /* Node_h */
