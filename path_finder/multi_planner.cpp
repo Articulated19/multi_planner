@@ -87,11 +87,9 @@ public:
     Node* startnode = getNode(startpoint);
     startnode->setCurrentFvalue(manhattan_heuristics(startpoint,endpoint));
     //Node* endnode = getNode(endpoint);
-    int g = 0;
     priority_queue<Node*, vector<Node*>, NodeCompare> beam;
     beam.push(startnode);
     Node* current;
-    int pathsize = 0;
     while(beam.size()){
       //1.Remove the best node from the beam
       //cout<<"Picked Node"<<endl;
@@ -128,7 +126,6 @@ public:
 
   Point2D** backtrace(Node* startNode, Node* goalNode){
     int pathSize = goalNode->getTreeSize();
-    Point2D* newPath[pathSize];
     pathSize--;
     Node* current = goalNode;
     while(1){
