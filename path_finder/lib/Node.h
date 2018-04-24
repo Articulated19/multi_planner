@@ -10,10 +10,15 @@
 #define Node_h
 
 #include "Point2D.h"
+#include <stdlib.h>
+#include <vector>
+
+using namespace std;
 
 class Node {
 private:
     Point2D** neighbours;
+    vector<int>* takenAgents;
     Point2D* pos;
     Node* parent;
     int treeSize;

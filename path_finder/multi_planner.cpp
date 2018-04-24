@@ -101,14 +101,17 @@ public:
         return backtrace(startnode,current);
       //3.Get neighbors from current
       Point2D** neighbors = current->getNeighbours();
-      //TODO I have no idea how to iterrate through an array of point2D.
       //4.Add each successor to beam and record it's parent
-      while(*neighbors){
-        cout<<(*neighbors)->getX()<<endl;
-        cout<<(*neighbors)->getY()<<endl;
-        neighbors++;
+      for(int n = 0; n < 2 ; n++){
+        if(!neighbors[n]) break;
+        if(neighbors[n]->getX() < 70) break;
+        Node* newNode = getNode(neighbors[n]);
+        newNode->setParent(current);
+        newNode->setCurrentFvalue(fvalue(current->getPosition(),neighbors[n],endpoint));
+        beam.push(newNode);
       }
 
+      cout<<beam.size()<<endl;
       if(beam.size() > beamSize){
         priority_queue<Node*, vector<Node*>, NodeCompare> temp;
         //cout<<"new beam"<<endl;

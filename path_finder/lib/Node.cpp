@@ -46,6 +46,7 @@ void Node::take(int id){
 
     } else{
       taken = id;
+      takenAgents->push_back(id);
     }
 }
 

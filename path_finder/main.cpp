@@ -15,6 +15,7 @@ using namespace std;
 #include "Gui.cpp"
 
 int main(int argc, const char * argv[]) {
+  int beamSize = 1000000000;
 
   multi_planner* planner = new multi_planner();
   //std::cout<<"planner spawned"<<endl;
@@ -35,7 +36,7 @@ int main(int argc, const char * argv[]) {
     Point2D* goalpoint  = new Point2D(goalx, goaly);
       //std::cout<<"Attempting to find path: (" << startx << "," <<starty<< ") to (" << goalx<< ", " <<goaly<<")"<<endl;
     //Point2D** path = planner->getPath(id, startpoint, goalpoint);
-    Point2D** path = planner->beamSearch(id, 10, startpoint, goalpoint);
+    Point2D** path = planner->beamSearch(id, beamSize, startpoint, goalpoint);
     ofstream file;
     string filename = "data/path_" + to_string(id) + ".txt";
     file.open(filename);
@@ -100,7 +101,7 @@ int main(int argc, const char * argv[]) {
       gui->drawStartEnd(startpoint, endpoint);
 
       //Point2D** path = planner->getPath(id, startpoint, endpoint);
-      Point2D** path = planner->beamSearch(id, 10, startpoint, endpoint);
+      Point2D** path = planner->beamSearch(id, beamSize, startpoint, endpoint);
 
       gui->drawPath(path);
 
