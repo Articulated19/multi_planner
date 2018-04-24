@@ -13,12 +13,14 @@
 Node::Node(Point2D** neighbours, Point2D* pos){
     this->neighbours = neighbours;
     this->pos = pos;
+    takenAgents = new map<int,int>;
     taken = 0;
     treeSize = 1;
 }
 
 Node::~Node(){
     delete neighbours;
+    delete takenAgents;
 }
 
 Point2D** Node::getNeighbours(){
@@ -46,8 +48,16 @@ void Node::take(int id){
 
     } else{
       taken = id;
-      takenAgents->push_back(id);
     }
+}
+
+void Node::take(int id, int nodeNr, double nodePerHour){
+  takenAgents->insert(pair<int,int>(id,time(nullptr) + (nodeNr/nodePerHour)*60*60));
+  taken = id;
+}
+
+void Node::remove(int id){
+  takenAgents->erase(id);
 }
 
 void Node::setParent(Node* parent){

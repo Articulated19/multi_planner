@@ -12,13 +12,14 @@
 #include "Point2D.h"
 #include <stdlib.h>
 #include <vector>
+#include <map>
 
 using namespace std;
 
 class Node {
 private:
     Point2D** neighbours;
-    vector<int>* takenAgents;
+    map<int,int>* takenAgents;
     Point2D* pos;
     Node* parent;
     int treeSize;
@@ -35,6 +36,8 @@ public:
     int isTaken(int);
     int getTreeSize();
     void take(int);
+    void take(int,int,double);
+    void remove(int);
     void setCurrentFvalue(double);
     double getCurrentFvalue();
 

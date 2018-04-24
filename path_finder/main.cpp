@@ -15,7 +15,7 @@ using namespace std;
 #include "Gui.cpp"
 
 int main(int argc, const char * argv[]) {
-  int beamSize = 1000000000;
+  int beamSize = 10;
 
   multi_planner* planner = new multi_planner();
   //std::cout<<"planner spawned"<<endl;
