@@ -65,6 +65,16 @@ void Node::setParent(Node* parent){
   treeSize += parent->treeSize;
 }
 
+Node* Node::popParent(){
+  Node* ret;
+  if(parent){
+    ret = parent;
+    parent = NULL;
+    treeSize = 1;
+  }
+  return ret;
+}
+
 Node* Node::getParent(){
   return parent;
 }
@@ -75,6 +85,10 @@ void Node::setCurrentFvalue(double value){
 
 double Node::getCurrentFvalue(){
   return currentFvalue;
+}
+
+bool Node::hasParent(){
+  return parent;
 }
 
 bool Node::equals(Node* target){

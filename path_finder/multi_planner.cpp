@@ -83,9 +83,11 @@ public:
     }
   };
 
-  Point2D** beamSearch(int id, int beamSize, Point2D* startpoint, Point2D* endpoint){
+  Point2D** beamSearch(int id, double speed, int beamSize, Point2D* startpoint, Point2D* endpoint){
     Node* startnode = getNode(startpoint);
     startnode->setCurrentFvalue(manhattan_heuristics(startpoint,endpoint));
+    Node* endnode = getNode(endpoint);
+    endnode->setCurrentFvalue(0);
     //Node* endnode = getNode(endpoint);
     priority_queue<Node*, vector<Node*>, NodeCompare> beam;
     beam.push(startnode);
@@ -99,7 +101,7 @@ public:
       beam.pop();
       //2.If we find a goal then we backtrace back to the start and return path
       if(current->getPosition()->equals(endpoint))
-        return backtrace(id,startnode,current);
+        return backtrace(id,speed,startnode,current);
       //3.Get neighbors from current
       Point2D** neighbors = current->getNeighbours();
       //4.Add each successor to beam and record it's parent
@@ -108,7 +110,7 @@ public:
         if(neighbors[n]->getX() < 70) break;
         Node* newNode = getNode(neighbors[n]);
         newNode->setParent(current);
-        newNode->setCurrentFvalue(fvalue(current->getPosition(),neighbors[n],endpoint));
+        newNode->setCurrentFvalue(fvalue(current,newNode,endnode,speed));
         beam.push(newNode);
       }
 
@@ -150,15 +152,15 @@ public:
     }
   }
 
-  Point2D** backtrace(int id, Node* startNode, Node* goalNode){
+  Point2D** backtrace(int id, double speed, Node* startNode, Node* goalNode){
     int pathSize = goalNode->getTreeSize();
     pathSize--;
     Node* current = goalNode;
     while(1){
-      current->take(id,pathSize+1,4);
+      current->take(id,pathSize+1,speed);
       path[pathSize] = current->getPosition();
       pathSize--;
-      current = current->getParent();
+      current = current->popParent();
       if(current->equals(startNode)){
         path[pathSize] = current->getPosition();
         //cout<<"("<<current->getPosition()->getX()<<","<<current->getPosition()->getY()<<")"<<endl;
@@ -169,13 +171,14 @@ public:
     return path;
   }
 
-  double fvalue(Point2D* current, Point2D* point, Point2D* goal){
-    return manhattan_heuristics(point, goal) + meeting_avoidance(current, point);
+  double fvalue(Node* current, Node* point, Node* goal, double speed){
+    return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed);
   }
 
   //TODO Implement this function so it gives high value if it is a big chance that the cars will meet at
   // point go_to
-  double meeting_avoidance(Point2D* current, Point2D* go_to){
+  double meeting_avoidance(Node* current, Node* go_to, double speed){
+    double expectedArrival = time(nullptr) + (current->getTreeSize()/speed)*60*60;
     return 0;
   }
 

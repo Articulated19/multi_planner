@@ -41,8 +41,10 @@ public:
     void setCurrentFvalue(double);
     double getCurrentFvalue();
 
+    bool hasParent();
     bool equals(Node*);
     void setParent(Node*);
+    Node* popParent();
     Node* getParent();
 };
 
