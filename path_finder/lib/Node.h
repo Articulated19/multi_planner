@@ -10,11 +10,20 @@
 #define Node_h
 
 #include "Point2D.h"
+#include <stdlib.h>
+#include <vector>
+#include <map>
+
+using namespace std;
 
 class Node {
 private:
     Point2D** neighbours;
+    map<int,double>* takenAgents;
     Point2D* pos;
+    Node* parent;
+    int treeSize;
+    double currentFvalue;
     int taken;
 
 
@@ -25,10 +34,19 @@ public:
     Point2D* getPosition();
 
     int isTaken(int);
+    int getTreeSize();
     void take(int);
+    void take(int,int,double);
+    void remove(int);
+    void setCurrentFvalue(double);
+    double getCurrentFvalue();
+    map<int,double>* getTakenAgents();
 
+    bool hasParent();
     bool equals(Node*);
-
+    void setParent(Node*);
+    Node* popParent();
+    Node* getParent();
 };
 
 #endif /* Node_h */

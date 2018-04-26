@@ -9,6 +9,7 @@
 #include <cmath>
 #include <algorithm>
 #include <dirent.h>
+#include <queue>
 
 using namespace std;
 
@@ -74,6 +75,120 @@ public:
       i++;
     }
     return path;
+  }
+
+  struct NodeCompare{
+    bool operator()(Node* n1, Node* n2){
+      return n1->getCurrentFvalue() > n2->getCurrentFvalue();
+    }
+  };
+
+  Point2D** beamSearch(int id, double speed, int beamSize, Point2D* startpoint, Point2D* endpoint){
+    Node* startnode = getNode(startpoint);
+    startnode->setCurrentFvalue(manhattan_heuristics(startpoint,endpoint));
+    Node* endnode = getNode(endpoint);
+    endnode->setCurrentFvalue(0);
+    //Node* endnode = getNode(endpoint);
+    priority_queue<Node*, vector<Node*>, NodeCompare> beam;
+    beam.push(startnode);
+    Node* current;
+    while(beam.size()){
+      //1.Remove the best node from the beam
+      cout<<"Picked Node"<<endl;
+      cout<<"("<<beam.top()->getPosition()->getX()<<","<<beam.top()->getPosition()->getY()<<") : "<<beam.top()->getCurrentFvalue()<<endl;
+      printBeam(beam);
+      current = beam.top();
+      beam.pop();
+      //2.If we find a goal then we backtrace back to the start and return path
+      if(current->getPosition()->equals(endpoint))
+        return backtrace(id,speed,startnode,current);
+      //3.Get neighbors from current
+      Point2D** neighbors = current->getNeighbours();
+      //4.Add each successor to beam and record it's parent
+      for(int n = 0; n < 2 ; n++){
+        if(!neighbors[n]) break;
+        if(neighbors[n]->getX() < 70) break;
+        Node* newNode = getNode(neighbors[n]);
+        newNode->setParent(current);
+        newNode->setCurrentFvalue(fvalue(current,newNode,endnode,speed));
+        beam.push(newNode);
+      }
+
+      //cout<<beam.size()<<endl;
+      //if(beam.size() > beamSize){
+        priority_queue<Node*, vector<Node*>, NodeCompare> temp;
+        //cout<<"new beam"<<endl;
+        Node* prev;
+        int capacity = beam.size();
+        for(int i = 0; i < beamSize; i++){
+          //cout<<"("<<beam.top()->getPosition()->getX()<<","<<beam.top()->getPosition()->getY()<<") : "<<beam.top()->getCurrentFvalue()<<endl;
+  
+          if(i == 0){
+            prev = beam.top();
+            temp.push(beam.top());
+            beam.pop();
+          }
+          else if(beam.top()->equals(prev)){
+            beam.pop();
+          } else if(i < capacity){
+            prev = beam.top();
+            temp.push(beam.top());
+            beam.pop();
+          }
+        }
+        beam.swap(temp);
+      //}
+    }
+    return path; // Found no path
+
+  }
+
+  void printBeam(priority_queue<Node*, vector<Node*>, NodeCompare> beam){
+    priority_queue<Node*, vector<Node*>, NodeCompare> tmp = beam;
+    cout<<"The beam is:"<<endl;
+    while(tmp.size()){
+      cout<<"("<<tmp.top()->getPosition()->getX()<<","<<tmp.top()->getPosition()->getY()<<") : "<<tmp.top()->getCurrentFvalue()<<endl;
+      tmp.pop();
+    }
+  }
+
+  Point2D** backtrace(int id, double speed, Node* startNode, Node* goalNode){
+    int pathSize = goalNode->getTreeSize();
+    pathSize--;
+    Node* current = goalNode;
+    while(1){
+      cout<<"("<<current->getPosition()->getX()<<","<<current->getPosition()->getY()<<")"<<endl;
+      current->take(id,pathSize+1,speed);
+      path[pathSize] = current->getPosition();
+      pathSize--;
+      current = current->popParent();
+      if(current->equals(startNode)){
+        path[pathSize] = current->getPosition();
+        cout<<"("<<current->getPosition()->getX()<<","<<current->getPosition()->getY()<<")"<<endl;
+        break;
+      }
+    }
+    cout<<"Done!"<<endl;
+    return path;
+  }
+
+  double fvalue(Node* current, Node* point, Node* goal, double speed){
+    return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed);
+  }
+
+  //TODO Implement this function so it gives high value if it is a big chance that the cars will meet at
+  // point go_to
+  double meeting_avoidance(Node* current, Node* go_to, double speed){
+    double expectedArrival = time(nullptr) + (current->getTreeSize()/speed)*60*60;
+    double result = 0;
+    for(auto const& x : *(go_to->getTakenAgents())){
+      cout<<"Taken Agent"<<endl;
+      cout<<x.first<<endl;
+      cout<<x.second<<endl;
+      if(expectedArrival > x.second + speed) continue;
+      result += sqrt( pow(expectedArrival, 2) + pow(x.second,2));
+    }
+    return 0;
   }
 
   double manhattan_heuristics(Point2D* point, Point2D* goal){

@@ -13,11 +13,14 @@
 Node::Node(Point2D** neighbours, Point2D* pos){
     this->neighbours = neighbours;
     this->pos = pos;
+    takenAgents = new map<int,double>;
     taken = 0;
+    treeSize = 1;
 }
 
 Node::~Node(){
     delete neighbours;
+    delete takenAgents;
 }
 
 Point2D** Node::getNeighbours(){
@@ -36,12 +39,60 @@ int Node::isTaken(int id){
     }
 }
 
+int Node::getTreeSize(){
+  return treeSize;
+}
+
 void Node::take(int id){
     if(taken != 0){
 
     } else{
       taken = id;
     }
+}
+
+void Node::take(int id, int nodeNr, double nodePerHour){
+  takenAgents->insert(pair<int,double>(id,time(nullptr) + (nodeNr/nodePerHour)*60*60));
+  taken = id;
+}
+
+void Node::remove(int id){
+  takenAgents->erase(id);
+}
+
+void Node::setParent(Node* parent){
+	this->parent = parent;
+  treeSize += parent->treeSize;
+}
+
+Node* Node::popParent(){
+  Node* ret;
+  if(parent){
+    ret = parent;
+    parent = NULL;
+    treeSize = 1;
+  }
+  return ret;
+}
+
+Node* Node::getParent(){
+  return parent;
+}
+
+void Node::setCurrentFvalue(double value){
+  currentFvalue = value;
+}
+
+double Node::getCurrentFvalue(){
+  return currentFvalue;
+}
+
+map<int,double>* Node::getTakenAgents(){
+  return takenAgents;
+}
+
+bool Node::hasParent(){
+  return parent;
 }
 
 bool Node::equals(Node* target){
