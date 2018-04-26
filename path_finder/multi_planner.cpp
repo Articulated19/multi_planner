@@ -157,13 +157,14 @@ public:
     pathSize--;
     Node* current = goalNode;
     while(1){
+      cout<<"("<<current->getPosition()->getX()<<","<<current->getPosition()->getY()<<")"<<endl;
       current->take(id,pathSize+1,speed);
       path[pathSize] = current->getPosition();
       pathSize--;
       current = current->popParent();
       if(current->equals(startNode)){
         path[pathSize] = current->getPosition();
-        //cout<<"("<<current->getPosition()->getX()<<","<<current->getPosition()->getY()<<")"<<endl;
+        cout<<"("<<current->getPosition()->getX()<<","<<current->getPosition()->getY()<<")"<<endl;
         break;
       }
     }
@@ -179,6 +180,14 @@ public:
   // point go_to
   double meeting_avoidance(Node* current, Node* go_to, double speed){
     double expectedArrival = time(nullptr) + (current->getTreeSize()/speed)*60*60;
+    double result = 0;
+    for(auto const& x : *(go_to->getTakenAgents())){
+      cout<<"Taken Agent"<<endl;
+      cout<<x.first<<endl;
+      cout<<x.second<<endl;
+      if(expectedArrival > x.second + speed) continue;
+      result += sqrt( pow(expectedArrival, 2) + pow(x.second,2));
+    }
     return 0;
   }
 

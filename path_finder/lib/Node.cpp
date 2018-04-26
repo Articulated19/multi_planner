@@ -13,7 +13,7 @@
 Node::Node(Point2D** neighbours, Point2D* pos){
     this->neighbours = neighbours;
     this->pos = pos;
-    takenAgents = new map<int,int>;
+    takenAgents = new map<int,double>;
     taken = 0;
     treeSize = 1;
 }
@@ -52,7 +52,7 @@ void Node::take(int id){
 }
 
 void Node::take(int id, int nodeNr, double nodePerHour){
-  takenAgents->insert(pair<int,int>(id,time(nullptr) + (nodeNr/nodePerHour)*60*60));
+  takenAgents->insert(pair<int,double>(id,time(nullptr) + (nodeNr/nodePerHour)*60*60));
   taken = id;
 }
 
@@ -85,6 +85,10 @@ void Node::setCurrentFvalue(double value){
 
 double Node::getCurrentFvalue(){
   return currentFvalue;
+}
+
+map<int,double>* Node::getTakenAgents(){
+  return takenAgents;
 }
 
 bool Node::hasParent(){

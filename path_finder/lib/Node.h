@@ -19,7 +19,7 @@ using namespace std;
 class Node {
 private:
     Point2D** neighbours;
-    map<int,int>* takenAgents;
+    map<int,double>* takenAgents;
     Point2D* pos;
     Node* parent;
     int treeSize;
@@ -40,6 +40,7 @@ public:
     void remove(int);
     void setCurrentFvalue(double);
     double getCurrentFvalue();
+    map<int,double>* getTakenAgents();
 
     bool hasParent();
     bool equals(Node*);
