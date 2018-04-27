@@ -21,6 +21,7 @@ class multi_planner{
 public:
   Node* graph[313];
   Point2D* path[313];
+  int visited = 0;
 
   Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
 
@@ -94,9 +95,7 @@ public:
     Node* current;
     while(beam.size()){
       //1.Remove the best node from the beam
-      cout<<"Picked Node"<<endl;
-      cout<<"("<<beam.top()->getPosition()->getX()<<","<<beam.top()->getPosition()->getY()<<") : "<<beam.top()->getCurrentFvalue()<<endl;
-      printBeam(beam);
+      visited++;
       current = beam.top();
       beam.pop();
       //2.If we find a goal then we backtrace back to the start and return path
@@ -113,16 +112,11 @@ public:
         newNode->setCurrentFvalue(fvalue(current,newNode,endnode,speed));
         beam.push(newNode);
       }
-
-      //cout<<beam.size()<<endl;
-      //if(beam.size() > beamSize){
+      //5.Remove highest elements if beam capacity is higher than beam size
         priority_queue<Node*, vector<Node*>, NodeCompare> temp;
-        //cout<<"new beam"<<endl;
         Node* prev;
         int capacity = beam.size();
         for(int i = 0; i < beamSize; i++){
-          //cout<<"("<<beam.top()->getPosition()->getX()<<","<<beam.top()->getPosition()->getY()<<") : "<<beam.top()->getCurrentFvalue()<<endl;
-  
           if(i == 0){
             prev = beam.top();
             temp.push(beam.top());
@@ -137,7 +131,6 @@ public:
           }
         }
         beam.swap(temp);
-      //}
     }
     return path; // Found no path
 
@@ -188,7 +181,7 @@ public:
       if(expectedArrival > x.second + speed) continue;
       result += sqrt( pow(expectedArrival, 2) + pow(x.second,2));
     }
-    return 0;
+    return result;
   }
 
   double manhattan_heuristics(Point2D* point, Point2D* goal){
