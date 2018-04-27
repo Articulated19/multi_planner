@@ -15,7 +15,7 @@ using namespace std;
 
 #include "Gui.cpp"
 
-void runTests(int,char,multi_planner*,Gui*);
+int countCollisions(multi_planner*);
 void printPath(Point2D**);
 
 int beamSize = 10000;
@@ -178,11 +178,21 @@ int main(int argc, const char * argv[]) {
             time = double(end - begin) / CLOCKS_PER_SEC;
           }
           totalTime += time;
-          cout<<"Test number "<<i+1<<endl;
-          cout<<"time:"<<time<<endl;
+          cout<<"*****************************Test number "<<i+1<<"*****************************"<<endl;
+          cout<<"Time:"<<time<<endl;
+          cout<<"Number of nodes visited: "<<planner->visited<<endl;
+          cout<<"***********************************************************************"<<endl;
+          cout<<endl;
           gui->drawPath(path);
           usleep(5000000);
-        } 
+        }
+        cout<<endl;
+        cout<<"*****************************TOTAL*****************************"<<endl;
+        cout<<"Total time:"<<totalTime<<endl;
+        cout<<"Number of Collisions: "<<countCollisions(planner) + planner->collisions<<endl;
+        cout<<"***********************************************************************"<<endl;
+        
+         
         while(1);
     }
   }
@@ -206,6 +216,17 @@ int main(int argc, const char * argv[]) {
 
     return 0;
 };
+
+int countCollisions(multi_planner* planner){
+  int result = 0;
+  Node** graph = planner->graph;
+  while(*graph){
+    if((*graph)->getTakenAgents()->size() > 1)
+      result++;
+    graph++;
+  }
+  return result;
+}
 
 void printPath(Point2D** path){
   while(*path){

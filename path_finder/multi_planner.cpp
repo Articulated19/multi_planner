@@ -21,10 +21,11 @@ class multi_planner{
 public:
   Node* graph[313];
   Point2D* path[313];
-  int visited = 0;
+  int visited = 0; // Used for measuring
+  int collisions = 0;
 
   Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
-
+    visited = 0;
     //cout << "Getting startnode.."<<endl;
     Node* startnode = getNode(startpoint);
     //cout<< "Startnode: " << startnode->getPosition()->getX() << ", " << startnode->getPosition()->getY()<<endl;
@@ -35,6 +36,7 @@ public:
     Node* current = startnode;
     Point2D** nbours;
     int i = 0;
+    visited++;
     while(1){
       if(current == endnode){
         //cout<<"Goal reached"<<endl;
@@ -44,7 +46,7 @@ public:
       //cout << "checking node: " << current->getPosition()->getX() << ", " <<current->getPosition()->getY() <<endl;
       double h = 10000;
       current = getNode(nbours[0]);
-
+      visited++;
       for(int n = 0; n < 2 ; n++){
         //if(nbours[n]->getX() < 70) break;
         if(!nbours[n]) break;
@@ -57,9 +59,11 @@ public:
           if(tmp < h) {
             h = tmp;
             current = tmpNode;
+            visited++;
           }
         }
         else{
+          collisions++;
           //cout<<"Node was taken!"<<endl;
         }
       }
@@ -85,6 +89,7 @@ public:
   };
 
   Point2D** beamSearch(int id, double speed, int beamSize, Point2D* startpoint, Point2D* endpoint){
+    visited = 0;
     Node* startnode = getNode(startpoint);
     startnode->setCurrentFvalue(manhattan_heuristics(startpoint,endpoint));
     Node* endnode = getNode(endpoint);
