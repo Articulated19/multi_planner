@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "lib/Point2D.h"
+#include "lib/Path.h"
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -171,7 +172,7 @@ public:
   }
 
   double fvalue(Node* current, Node* point, Node* goal, double speed){
-    return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed);
+    return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed) + point->getTreeSize();
   }
 
   //TODO Implement this function so it gives high value if it is a big chance that the cars will meet at

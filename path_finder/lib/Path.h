@@ -8,7 +8,11 @@
 
 #ifndef Path_h
 #define Path_h
+#include <stdlib.h>
+#include <vector>
 #include "Node.h"
+
+using namespace std;
 
 class Path{
 private:
@@ -16,15 +20,15 @@ private:
      The path starting node at 0
      */
     Path(int);
-    Node** path;
-    double cost;
+    vector<Node*>* path;
     int length;
     
 public:
+    Path(vector<Node*>);
     Path();
     ~Path();
     int path_length();
-    double getCost();
+    Node* fst();
     void addNode(Node*);
     Path addNodeAndClone(Node*);
     bool equals(Path*);
