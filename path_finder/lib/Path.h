@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <vector>
 #include "Node.h"
+#include "Point2D.h"
 
 using namespace std;
 
@@ -21,16 +22,22 @@ private:
      */
     Path(int);
     vector<Node*>* path;
+    double cost;
     int length;
+    void printPath(vector<Node*>*);
     
 public:
-    Path(vector<Node*>);
+    Path(vector<Node*>*);
     Path();
     ~Path();
     int path_length();
+    double getCost();
+    void setCost(double);
     Node* fst();
+    void print();
     void addNode(Node*);
-    Path addNodeAndClone(Node*);
+    vector<Node*>* getPath();
+    Path* addNodeAndClone(Node*);
     bool equals(Path*);
 };
 
