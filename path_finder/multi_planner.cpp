@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "lib/Point2D.h"
+#include "lib/Path.h"
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -21,9 +22,11 @@ class multi_planner{
 public:
   Node* graph[313];
   Point2D* path[313];
+  int visited = 0; // Used for measuring
+  int collisions = 0;
 
   Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
-
+    visited = 0;
     //cout << "Getting startnode.."<<endl;
     Node* startnode = getNode(startpoint);
     //cout<< "Startnode: " << startnode->getPosition()->getX() << ", " << startnode->getPosition()->getY()<<endl;
@@ -34,6 +37,7 @@ public:
     Node* current = startnode;
     Point2D** nbours;
     int i = 0;
+    visited++;
     while(1){
       if(current == endnode){
         //cout<<"Goal reached"<<endl;
@@ -43,7 +47,7 @@ public:
       //cout << "checking node: " << current->getPosition()->getX() << ", " <<current->getPosition()->getY() <<endl;
       double h = 10000;
       current = getNode(nbours[0]);
-
+      visited++;
       for(int n = 0; n < 2 ; n++){
         //if(nbours[n]->getX() < 70) break;
         if(!nbours[n]) break;
@@ -56,9 +60,11 @@ public:
           if(tmp < h) {
             h = tmp;
             current = tmpNode;
+            visited++;
           }
         }
         else{
+          collisions++;
           //cout<<"Node was taken!"<<endl;
         }
       }
@@ -84,6 +90,7 @@ public:
   };
 
   Point2D** beamSearch(int id, double speed, int beamSize, Point2D* startpoint, Point2D* endpoint){
+    visited = 0;
     Node* startnode = getNode(startpoint);
     startnode->setCurrentFvalue(manhattan_heuristics(startpoint,endpoint));
     Node* endnode = getNode(endpoint);
@@ -94,9 +101,7 @@ public:
     Node* current;
     while(beam.size()){
       //1.Remove the best node from the beam
-      cout<<"Picked Node"<<endl;
-      cout<<"("<<beam.top()->getPosition()->getX()<<","<<beam.top()->getPosition()->getY()<<") : "<<beam.top()->getCurrentFvalue()<<endl;
-      printBeam(beam);
+      visited++;
       current = beam.top();
       beam.pop();
       //2.If we find a goal then we backtrace back to the start and return path
@@ -113,16 +118,11 @@ public:
         newNode->setCurrentFvalue(fvalue(current,newNode,endnode,speed));
         beam.push(newNode);
       }
-
-      //cout<<beam.size()<<endl;
-      //if(beam.size() > beamSize){
+      //5.Remove highest elements if beam capacity is higher than beam size
         priority_queue<Node*, vector<Node*>, NodeCompare> temp;
-        //cout<<"new beam"<<endl;
         Node* prev;
         int capacity = beam.size();
         for(int i = 0; i < beamSize; i++){
-          //cout<<"("<<beam.top()->getPosition()->getX()<<","<<beam.top()->getPosition()->getY()<<") : "<<beam.top()->getCurrentFvalue()<<endl;
-  
           if(i == 0){
             prev = beam.top();
             temp.push(beam.top());
@@ -137,7 +137,6 @@ public:
           }
         }
         beam.swap(temp);
-      //}
     }
     return path; // Found no path
 
@@ -173,7 +172,7 @@ public:
   }
 
   double fvalue(Node* current, Node* point, Node* goal, double speed){
-    return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed);
+    return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed) + point->getTreeSize();
   }
 
   //TODO Implement this function so it gives high value if it is a big chance that the cars will meet at
@@ -188,7 +187,7 @@ public:
       if(expectedArrival > x.second + speed) continue;
       result += sqrt( pow(expectedArrival, 2) + pow(x.second,2));
     }
-    return 0;
+    return result;
   }
 
   double manhattan_heuristics(Point2D* point, Point2D* goal){

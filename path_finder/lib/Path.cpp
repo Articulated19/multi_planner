@@ -17,25 +17,31 @@ Path::~Path(){
     
 }
 
-Path::Path(int capacity){
-    
+Path::Path(){
+    path = new vector<Node*>()
+}
+
+Path::Path(vector<Node*> v){
+  (*path) = v;
 }
 
 int Path::path_length(){
     return length;
 }
 
-double Path::getCost(){
-    return cost;
+
+void Path::addNode(Node* n){
+    path->push_back(n);
 }
 
-void Path::addNode(Node*){
-    
+Path Path::addNodeAndClone(Node* n){
+  vector<Node*> cloned(path);
+  cloned.push_back(n);
+  return new Path(cloned);
 }
 
-Path Path::addNodeAndClone(Node*){
-    
-    return (*this);
+Node* Path::fst(){
+  return path->peek();
 }
 
 bool Path::equals(Path* path){

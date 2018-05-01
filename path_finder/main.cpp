@@ -5,6 +5,7 @@
 #include <cstring>
 #include "multi_planner.cpp"
 #include <thread>
+#include <unistd.h>
 
 using namespace std;
 
@@ -14,9 +15,13 @@ using namespace std;
 
 #include "Gui.cpp"
 
+int countCollisions(multi_planner*);
+void printPath(Point2D**);
+
+int beamSize = 10000;
+double speed = 10;
+
 int main(int argc, const char * argv[]) {
-  int beamSize = 10000;
-  double speed = 10;
 
   multi_planner* planner = new multi_planner();
   //std::cout<<"planner spawned"<<endl;
@@ -72,8 +77,7 @@ int main(int argc, const char * argv[]) {
 
     Gui* gui = new Gui();
     std::thread windowthread(&gui->createWindow);
-
-    while(1){
+      while(1){
       cout<<"Id: >>";
       int id;
       cin >> id;
@@ -102,6 +106,8 @@ int main(int argc, const char * argv[]) {
       gui->drawStartEnd(startpoint, endpoint);
 
       Point2D** path = planner->getPath(id, startpoint, endpoint);
+      Node* node = planner->getNode(startpoint);
+      cout<<"taken before is: "<<node->isTaken(2)<<endl;
       //Point2D** path = planner->beamSearch(id, speed, beamSize, startpoint, endpoint);
 
       gui->drawPath(path);
@@ -118,7 +124,6 @@ int main(int argc, const char * argv[]) {
       file.close();
 
       //windowthread.join();
-
     }
   }
 
@@ -127,6 +132,68 @@ int main(int argc, const char * argv[]) {
     if(cmd.compare("-clear") == 0){
       system("exec rm -r data/*");
       cout << "Cleared path data"<<endl;
+    } else if(cmd.compare("-test") == 0){
+      int maxTests = 5;
+      Gui* gui = new Gui();
+      std::thread windowthread(&gui->createWindow);
+      int nrTests;
+      char alg;
+      cout<<"Number of tests(max 5):";
+      cin>>nrTests;
+      cout<<"Choose pathfinder((b)eam search or (g)reedy breath first search):";
+      cin>>alg;
+
+      Point2D* starts[5];
+      Point2D* ends[5];
+  
+        starts[0] = new Point2D(77, 467.2);
+        ends[0] = new Point2D(365, 684.6);
+        starts[1] = new Point2D(325.8, 665);
+        ends[1] = new Point2D(116.6, 426);
+        starts[2] = new Point2D(365, 225);
+        ends[2] = new Point2D(77, 714.5);
+        starts[3] = new Point2D(179.1, 419.5);
+        ends[3] = new Point2D(327.6, 585);
+        starts[4] = new Point2D(366.9, 584.3);
+        ends[4] = new Point2D(179.1, 381.4);
+
+        if(nrTests > maxTests)
+          nrTests = maxTests;
+  
+        cout<<"Running Tests"<<endl;
+        double totalTime = 0;
+        for(int i = 0; i < nrTests; i++){
+          gui->drawStartEnd(starts[i], ends[i]);
+          Point2D** path;
+          double time = 0;
+          if(alg == 'b'){ 
+            clock_t begin = clock();
+            path = planner->beamSearch(i+1, speed, beamSize, starts[i], ends[i]);
+            clock_t end = clock();
+            time = double(end - begin) / CLOCKS_PER_SEC;
+          }else if(alg == 'g'){
+            clock_t begin = clock();
+            path = planner->getPath(i+1, starts[i], ends[i]);
+            clock_t end = clock();
+            time = double(end - begin) / CLOCKS_PER_SEC;
+          }
+          totalTime += time;
+          cout<<"*****************************Test number "<<i+1<<"*****************************"<<endl;
+          cout<<"Time:"<<time<<endl;
+          cout<<"Number of nodes visited: "<<planner->visited<<endl;
+          cout<<"***********************************************************************"<<endl;
+          cout<<endl;
+          gui->drawPath(path);
+          usleep(5000000);
+        }
+        cout<<endl;
+        cout<<"*****************************TOTAL*****************************"<<endl;
+        cout<<"Total time:"<<totalTime<<endl;
+        cout<<"Number of Collisions: "<<countCollisions(planner) + planner->collisions<<endl;
+        cout<<"***********************************************************************"<<endl;
+        
+         
+        while(1);
     }
   }
 
@@ -149,3 +216,21 @@ int main(int argc, const char * argv[]) {
 
     return 0;
 };
+
+int countCollisions(multi_planner* planner){
+  int result = 0;
+  Node** graph = planner->graph;
+  while(*graph){
+    if((*graph)->getTakenAgents()->size() > 1)
+      result++;
+    graph++;
+  }
+  return result;
+}
+
+void printPath(Point2D** path){
+  while(*path){
+    cout<<"("<<(*path)->getX()<<","<<(*path)->getY()<<")"<<endl;
+    path++;
+  }
+}

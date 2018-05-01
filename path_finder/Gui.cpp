@@ -90,6 +90,11 @@ void Gui::createWindow()
             pt.setSize(sf::Vector2f(4,4));
             pt.setPosition(point_x / 10,point_y / 10 );
           }
+          if(i == 4){
+            pt.setFillColor(sf::Color::White);
+            pt.setSize(sf::Vector2f(4,4));
+            pt.setPosition(point_x / 10,point_y / 10 );
+          }
 
           window.draw(pt);
           window.display();

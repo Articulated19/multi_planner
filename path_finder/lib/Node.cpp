@@ -47,7 +47,8 @@ void Node::take(int id){
     if(taken != 0){
 
     } else{
-      taken = id;
+      //taken = id;
+      take(id,0,0);
     }
 }
 
