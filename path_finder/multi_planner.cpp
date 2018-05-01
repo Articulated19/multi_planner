@@ -177,14 +177,21 @@ public:
   //TODO There is a bug here result gives always 0.
   // point go_to
   double meeting_avoidance(Path* current, Node* go_to, double speed){
-    double expectedArrival = time(nullptr) + (current->path_length()/speed)*60*60;
-    double result = 0;
+    double expectedArrival = time(0) + (current->path_length()/speed)*60*60;
+    //cout<<"Expected arrival for this: "<<expectedArrival<<endl;
+    double result = 2;
     for(auto const& x : *(go_to->getTakenAgents())){
       //cout<<"Taken Agent"<<endl;
       //cout<<x.first<<endl;
       //cout<<x.second<<endl;
+      //cout<<"Meeting"<<endl;
+      if(expectedArrival <= x.second + speed)
+        cout<<"They Will meet!"<<endl;
+      //cout<<"result"<<result<<endl;
       if(expectedArrival > x.second + speed) continue;
-      result += sqrt( pow(expectedArrival, 2) + pow(x.second,2));
+      current->increase_meeting_risk_lvl();
+      cout<<"Meeting Risk is: "<<current->get_meeting_risk_lvl()<<endl;
+      result = pow(result,current->get_meeting_risk_lvl());
     }
     return result;
   }

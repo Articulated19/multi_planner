@@ -14,6 +14,7 @@ Path::~Path(){
 }
 
 Path::Path(){
+    meeting_risk_lvl = 0;
     path = new vector<Node*>();
 }
 
@@ -30,9 +31,13 @@ void Path::addNode(Node* n){
     path->push_back(n);
 }
 
-//TODO This function sucks so fix it
+//TODO Fix meeting risk
 Path* Path::addNodeAndClone(Node* n){
-  Path* newPath = new Path(); //Here it might be a bugg
+  Path* newPath = new Path(); //Here it might be a bug
+  cout<<"Risk copied before:"<<meeting_risk_lvl<<endl;
+  newPath->meeting_risk_lvl = meeting_risk_lvl;
+  cout<<"Risk:"<<meeting_risk_lvl<<endl;
+  cout<<"Risk copied after:"<<meeting_risk_lvl<<endl;
   for(unsigned int i = 0; i < path->size(); i++){
     newPath->addNode(path->at(i));
   }
@@ -67,6 +72,14 @@ void Path::setCost(double cost){
 
 vector<Node*>* Path::getPath(){
   return path;
+}
+
+void Path::increase_meeting_risk_lvl(){
+  meeting_risk_lvl++;
+}
+
+int Path::get_meeting_risk_lvl(){
+  return meeting_risk_lvl;
 }
 
 bool Path::equals(Path* path){
