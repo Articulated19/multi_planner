@@ -6,6 +6,7 @@
 #include "multi_planner.cpp"
 #include <thread>
 #include <unistd.h>
+#include <time.h>
 
 using namespace std;
 
@@ -194,6 +195,35 @@ int main(int argc, const char * argv[]) {
         
          
         while(1);
+    } else if (cmd.compare("-random") == 0){
+      cout<<"Printing Random Paths"<<endl;
+      Gui* gui = new Gui();
+      std::thread windowthread(&gui->createWindow);
+      srand(time(NULL));
+      char quit;
+      int id = 1;
+      do
+      {
+        Point2D* startpoint = planner->graph[rand() % 313]->getPosition();
+        Point2D* endpoint = planner->graph[rand() % 313]->getPosition();
+        gui->drawStartEnd(startpoint, endpoint);
+        
+        
+        Point2D** path;
+        cout<<"Choose pathfinder((b)eam search or (g)reedy breath first search):";
+        char alg;
+        cin>>alg;
+        if(alg == 'g'){ 
+          path = planner->getPath(id, startpoint, endpoint);
+        }else if(alg == 'b'){
+          path = planner->beamSearch(id, speed, beamSize, startpoint, endpoint);
+        }
+        gui->drawPath(path);
+        cout<<"Printing out ("<<startpoint->getX()<<","<<startpoint->getY()<<")  ---->  (";
+        cout<<endpoint->getX()<<","<<endpoint->getY()<<")"<<endl;
+        cout<<"Do you want to quit? (y/n)";
+        cin>>quit;
+      } while(quit != 'y');
     }
   }
 
