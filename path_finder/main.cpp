@@ -223,6 +223,7 @@ int main(int argc, const char * argv[]) {
         cout<<endpoint->getX()<<","<<endpoint->getY()<<")"<<endl;
         cout<<"Do you want to quit? (y/n)";
         cin>>quit;
+        id++;
       } while(quit != 'y');
     }
   }
