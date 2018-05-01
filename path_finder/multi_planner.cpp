@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "lib/Point2D.h"
-#include "lib/Path.h"
+#include "lib/Path.cpp"
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -89,6 +89,12 @@ public:
     }
   };
 
+  struct PathCompare{
+    bool operator()(Path* n1, Path* n2){
+      return n1->getCost() > n2->getCost();
+    }
+  };
+
   Point2D** beamSearch(int id, double speed, int beamSize, Point2D* startpoint, Point2D* endpoint){
     visited = 0;
     Node* startnode = getNode(startpoint);
@@ -96,51 +102,66 @@ public:
     Node* endnode = getNode(endpoint);
     endnode->setCurrentFvalue(0);
     //Node* endnode = getNode(endpoint);
-    priority_queue<Node*, vector<Node*>, NodeCompare> beam;
-    beam.push(startnode);
+    priority_queue<Path*, vector<Path*>, PathCompare> beam;
+    Path* start = new Path();
+    start->addNode(startnode);
+    beam.push(start);
     Node* current;
+    Path* currentPath;
     while(beam.size()){
       //1.Remove the best node from the beam
       visited++;
-      current = beam.top();
+      currentPath = beam.top();
       beam.pop();
+      current = currentPath->fst();
       //2.If we find a goal then we backtrace back to the start and return path
       if(current->getPosition()->equals(endpoint))
-        return backtrace(id,speed,startnode,current);
+        return backtrace(id,speed,currentPath);
       //3.Get neighbors from current
       Point2D** neighbors = current->getNeighbours();
       //4.Add each successor to beam and record it's parent
-      for(int n = 0; n < 2 ; n++){
+      for(int n = 0; n < 2; n++){
         if(!neighbors[n]) break;
         if(neighbors[n]->getX() < 70) break;
+        Path* newPath;
         Node* newNode = getNode(neighbors[n]);
-        newNode->setParent(current);
-        newNode->setCurrentFvalue(fvalue(current,newNode,endnode,speed));
-        beam.push(newNode);
+        //Segmentation fault here TODO Fix this
+        newPath = currentPath->addNodeAndClone(newNode);
+        newPath->setCost(newPath->path_length() + fvalue(currentPath, newNode, endnode, speed));
+        beam.push(newPath);
       }
+      delete currentPath;
       //5.Remove highest elements if beam capacity is higher than beam size
-        priority_queue<Node*, vector<Node*>, NodeCompare> temp;
-        Node* prev;
-        int capacity = beam.size();
-        for(int i = 0; i < beamSize; i++){
-          if(i == 0){
-            prev = beam.top();
-            temp.push(beam.top());
-            beam.pop();
-          }
-          else if(beam.top()->equals(prev)){
-            beam.pop();
-          } else if(i < capacity){
-            prev = beam.top();
-            temp.push(beam.top());
-            beam.pop();
-          }
-        }
-        beam.swap(temp);
+      priority_queue<Path*, vector<Path*>, PathCompare> tmp;
+      for(int i = 0; i < beamSize && beam.size() > 0; i++){
+        tmp.push(beam.top());
+        beam.pop();
+      }
+      beam.swap(tmp);
     }
     return path; // Found no path
 
   }
+
+  Point2D** backtrace(int id, double speed, Path* result){
+    int pathSize = result->path_length();
+    vector<Node*>* v = result->getPath();
+    pathSize--;
+    Node* current = v->back();
+    while(1){
+      cout<<"("<<current->getPosition()->getX()<<","<<current->getPosition()->getY()<<")"<<endl;
+      current->take(id,pathSize+1,speed);
+      path[pathSize] = current->getPosition();
+      pathSize--;
+      v->pop_back();
+      if(v->size())
+        current = v->back();
+      else
+        break;
+    }
+    cout<<"Done!"<<endl;
+    return path;
+}
 
   void printBeam(priority_queue<Node*, vector<Node*>, NodeCompare> beam){
     priority_queue<Node*, vector<Node*>, NodeCompare> tmp = beam;
@@ -151,34 +172,14 @@ public:
     }
   }
 
-  Point2D** backtrace(int id, double speed, Node* startNode, Node* goalNode){
-    int pathSize = goalNode->getTreeSize();
-    pathSize--;
-    Node* current = goalNode;
-    while(1){
-      cout<<"("<<current->getPosition()->getX()<<","<<current->getPosition()->getY()<<")"<<endl;
-      current->take(id,pathSize+1,speed);
-      path[pathSize] = current->getPosition();
-      pathSize--;
-      current = current->popParent();
-      if(current->equals(startNode)){
-        path[pathSize] = current->getPosition();
-        cout<<"("<<current->getPosition()->getX()<<","<<current->getPosition()->getY()<<")"<<endl;
-        break;
-      }
-    }
-    cout<<"Done!"<<endl;
-    return path;
+  double fvalue(Path* current, Node* point, Node* goal, double speed){
+    return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed);
   }
 
-  double fvalue(Node* current, Node* point, Node* goal, double speed){
-    return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed) + point->getTreeSize();
-  }
-
-  //TODO Implement this function so it gives high value if it is a big chance that the cars will meet at
+  //TODO There is a bug here result gives always 0.
   // point go_to
-  double meeting_avoidance(Node* current, Node* go_to, double speed){
-    double expectedArrival = time(nullptr) + (current->getTreeSize()/speed)*60*60;
+  double meeting_avoidance(Path* current, Node* go_to, double speed){
+    double expectedArrival = time(nullptr) + (current->path_length()/speed)*60*60;
     double result = 0;
     for(auto const& x : *(go_to->getTakenAgents())){
       cout<<"Taken Agent"<<endl;
