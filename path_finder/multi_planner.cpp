@@ -125,9 +125,8 @@ public:
         if(neighbors[n]->getX() < 70) break;
         Path* newPath;
         Node* newNode = getNode(neighbors[n]);
-        //Segmentation fault here TODO Fix this
         newPath = currentPath->addNodeAndClone(newNode);
-        newPath->setCost(newPath->path_length() + fvalue(currentPath, newNode, endnode, speed));
+        newPath->increaseCost(newPath->path_length() + fvalue(currentPath, newNode, endnode, speed));
         beam.push(newPath);
       }
       delete currentPath;
@@ -161,11 +160,11 @@ public:
     return path;
 }
 
-  void printBeam(priority_queue<Node*, vector<Node*>, NodeCompare> beam){
-    priority_queue<Node*, vector<Node*>, NodeCompare> tmp = beam;
+  void printBeam(priority_queue<Path*, vector<Path*>, PathCompare> beam){
+    priority_queue<Path*, vector<Path*>, PathCompare> tmp = beam;
     cout<<"The beam is:"<<endl;
     while(tmp.size()){
-      cout<<"("<<tmp.top()->getPosition()->getX()<<","<<tmp.top()->getPosition()->getY()<<") : "<<tmp.top()->getCurrentFvalue()<<endl;
+      cout<<tmp.top()->getCost()<<endl;
       tmp.pop();
     }
   }
@@ -178,21 +177,14 @@ public:
   // point go_to
   double meeting_avoidance(Path* current, Node* go_to, double speed){
     double expectedArrival = time(0) + (current->path_length()/speed)*60*60;
-    //cout<<"Expected arrival for this: "<<expectedArrival<<endl;
-    double result = 2;
+    double result = current->getCost();
     for(auto const& x : *(go_to->getTakenAgents())){
-      //cout<<"Taken Agent"<<endl;
-      //cout<<x.first<<endl;
-      //cout<<x.second<<endl;
-      //cout<<"Meeting"<<endl;
-      if(expectedArrival <= x.second + speed)
-        cout<<"They Will meet!"<<endl;
-      //cout<<"result"<<result<<endl;
       if(expectedArrival > x.second + speed) continue;
       current->increase_meeting_risk_lvl();
-      cout<<"Meeting Risk is: "<<current->get_meeting_risk_lvl()<<endl;
       result = pow(result,current->get_meeting_risk_lvl());
     }
+    
+    if(isinf((float)result)) return 0; //if result is too big then choose the path with collision
     return result;
   }
 

@@ -134,29 +134,33 @@ int main(int argc, const char * argv[]) {
       system("exec rm -r data/*");
       cout << "Cleared path data"<<endl;
     } else if(cmd.compare("-test") == 0){
-      int maxTests = 5;
+      int maxTests = 7;
       Gui* gui = new Gui();
       std::thread windowthread(&gui->createWindow);
       int nrTests;
       char alg;
-      cout<<"Number of tests(max 5):";
+      cout<<"Number of tests(max "<<maxTests<<"):";
       cin>>nrTests;
       cout<<"Choose pathfinder((b)eam search or (g)reedy breath first search):";
       cin>>alg;
 
-      Point2D* starts[5];
-      Point2D* ends[5];
+      Point2D* starts[maxTests];
+      Point2D* ends[maxTests];
   
-        starts[0] = new Point2D(77, 467.2);
-        ends[0] = new Point2D(365, 684.6);
-        starts[1] = new Point2D(325.8, 665);
-        ends[1] = new Point2D(116.6, 426);
-        starts[2] = new Point2D(365, 225);
-        ends[2] = new Point2D(77, 714.5);
-        starts[3] = new Point2D(179.1, 419.5);
-        ends[3] = new Point2D(327.6, 585);
-        starts[4] = new Point2D(366.9, 584.3);
-        ends[4] = new Point2D(179.1, 381.4);
+        starts[0] = new Point2D(212.2,135.1);
+        ends[0] = new Point2D(275.2,449.2);
+        starts[1] = new Point2D(77,281.8);
+        ends[1] = new Point2D(327.6,585);
+        starts[2] = new Point2D(77, 467.2);
+        ends[2] = new Point2D(365, 684.6);
+        starts[3] = new Point2D(325.8, 665);
+        ends[3] = new Point2D(116.6, 426);
+        starts[4] = new Point2D(365, 225);
+        ends[4] = new Point2D(77, 714.5);
+        starts[5] = new Point2D(179.1, 419.5);
+        ends[5] = new Point2D(327.6, 585);
+        starts[6] = new Point2D(366.9, 584.3);
+        ends[6] = new Point2D(179.1, 381.4);
 
         if(nrTests > maxTests)
           nrTests = maxTests;

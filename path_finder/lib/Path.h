@@ -34,6 +34,7 @@ public:
     int path_length();
     double getCost();
     void setCost(double);
+    void increaseCost(double);
     Node* fst();
     void print();
     void addNode(Node*);
