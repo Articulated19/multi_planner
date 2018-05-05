@@ -204,8 +204,8 @@ int main(int argc, const char * argv[]) {
       int id = 1;
       do
       {
-        Point2D* startpoint = planner->graph[rand() % 313]->getPosition();
-        Point2D* endpoint = planner->graph[rand() % 313]->getPosition();
+        Point2D* startpoint = planner->graph[rand() % 362]->getPosition();
+        Point2D* endpoint = planner->graph[rand() % 362]->getPosition();
         gui->drawStartEnd(startpoint, endpoint);
         
         
@@ -213,14 +213,14 @@ int main(int argc, const char * argv[]) {
         cout<<"Choose pathfinder((b)eam search or (g)reedy breath first search):";
         char alg;
         cin>>alg;
+        cout<<"Printing out ("<<startpoint->getX()<<","<<startpoint->getY()<<")  ---->  (";
+        cout<<endpoint->getX()<<","<<endpoint->getY()<<")"<<endl;
         if(alg == 'g'){ 
           path = planner->getPath(id, startpoint, endpoint);
         }else if(alg == 'b'){
           path = planner->beamSearch(id, speed, beamSize, startpoint, endpoint);
         }
         gui->drawPath(path);
-        cout<<"Printing out ("<<startpoint->getX()<<","<<startpoint->getY()<<")  ---->  (";
-        cout<<endpoint->getX()<<","<<endpoint->getY()<<")"<<endl;
         cout<<"Do you want to quit? (y/n)";
         cin>>quit;
         id++;

@@ -20,8 +20,10 @@ using namespace std;
 class multi_planner{
 
 public:
-  Node* graph[313];
-  Point2D* path[313];
+  //Node* graph[313];
+  Node* graph[362];
+  //Point2D* path[313];
+  Point2D* path[362];
   int visited = 0; // Used for measuring
   int collisions = 0;
 
@@ -202,7 +204,7 @@ public:
     //Node* result;
       double pointX = point->getX();
       double pointY = point->getY();
-      for(unsigned int i = 0; i < 313 - 1; i++){
+      for(unsigned int i = 0; i < 362 - 1; i++){
         if(graph[i]->getPosition()->getX() == pointX && graph[i]->getPosition()->getY() == pointY) {
           return graph[i];
         }
@@ -271,10 +273,11 @@ public:
   }
 
   void createGraph(){
-    ifstream input("graph.txt");
+    //ifstream input("graph.txt");
+    ifstream input("graphMedium.txt");
     double pos[5];
 
-    string arr[2000];
+    string arr[3000];
     string wline;
     int num_lines = 0;
 
