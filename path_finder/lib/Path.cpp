@@ -14,6 +14,7 @@ Path::~Path(){
 }
 
 Path::Path(){
+    meeting_risk_lvl = 1;
     path = new vector<Node*>();
 }
 
@@ -30,13 +31,14 @@ void Path::addNode(Node* n){
     path->push_back(n);
 }
 
-//TODO This function sucks so fix it
 Path* Path::addNodeAndClone(Node* n){
-  Path* newPath = new Path(); //Here it might be a bugg
+  Path* newPath = new Path();
+  newPath->meeting_risk_lvl = meeting_risk_lvl;
   for(unsigned int i = 0; i < path->size(); i++){
     newPath->addNode(path->at(i));
   }
   newPath->addNode(n);
+  newPath->cost = cost;
   return newPath;
 }
 
@@ -65,8 +67,20 @@ void Path::setCost(double cost){
   this->cost = cost;
 }
 
+void Path::increaseCost(double cost){
+  this->cost += cost;
+}
+
 vector<Node*>* Path::getPath(){
   return path;
+}
+
+void Path::increase_meeting_risk_lvl(){
+  meeting_risk_lvl++;
+}
+
+int Path::get_meeting_risk_lvl(){
+  return meeting_risk_lvl;
 }
 
 bool Path::equals(Path* path){

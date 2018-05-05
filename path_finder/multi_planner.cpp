@@ -25,8 +25,13 @@ public:
   int visited = 0; // Used for measuring
   int collisions = 0;
 
-  Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
+  void resetResults(){
     visited = 0;
+    collisions = 0;
+  }
+
+  Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
+    resetResults();
     //cout << "Getting startnode.."<<endl;
     Node* startnode = getNode(startpoint);
     //cout<< "Startnode: " << startnode->getPosition()->getX() << ", " << startnode->getPosition()->getY()<<endl;
@@ -96,7 +101,7 @@ public:
   };
 
   Point2D** beamSearch(int id, double speed, int beamSize, Point2D* startpoint, Point2D* endpoint){
-    visited = 0;
+    resetResults();
     Node* startnode = getNode(startpoint);
     startnode->setCurrentFvalue(manhattan_heuristics(startpoint,endpoint));
     Node* endnode = getNode(endpoint);
@@ -125,9 +130,8 @@ public:
         if(neighbors[n]->getX() < 70) break;
         Path* newPath;
         Node* newNode = getNode(neighbors[n]);
-        //Segmentation fault here TODO Fix this
         newPath = currentPath->addNodeAndClone(newNode);
-        newPath->setCost(newPath->path_length() + fvalue(currentPath, newNode, endnode, speed));
+        newPath->increaseCost(newPath->path_length() + fvalue(currentPath, newNode, endnode, speed));
         beam.push(newPath);
       }
       delete currentPath;
@@ -144,28 +148,53 @@ public:
   }
 
   Point2D** backtrace(int id, double speed, Path* result){
-    int pathSize = result->path_length();
+    //int pathSize = result->path_length();
     vector<Node*>* v = result->getPath();
-    pathSize--;
-    Node* current = v->back();
-    while(1){
-      current->take(id,pathSize+1,speed);
-      path[pathSize] = current->getPosition();
-      pathSize--;
+    vector<Node*>* vPath = new vector<Node*>();
+    bool foundCollision = false;
+    while(v->size()){
+      Node* n = v->back();
       v->pop_back();
-      if(v->size())
-        current = v->back();
+      if(n->is_end_node()){
+        delete vPath;
+        vPath = new vector<Node*>();
+        cout<<"Deleting"<<endl;
+        foundCollision = true;
+      } else {
+        cout<<"Added to vPath"<<endl;
+        vPath->push_back(n);
+      }
+    }    
+    
+    //pathSize--;
+    int i = 0;
+    Node* current = vPath->back();
+    while(1){
+      current->take(id,i+1,speed);
+      path[i] = current->getPosition();
+      i++;
+      vPath->pop_back();
+      if(vPath->size()){
+        current = vPath->back();
+      }
       else
+      {
+        current->enableEndNode();
+        if(foundCollision){
+          collisions++;
+          Gui::drawError(current->getPosition());
+        }
         break;
+      }
     }
     return path;
-}
+  }
 
-  void printBeam(priority_queue<Node*, vector<Node*>, NodeCompare> beam){
-    priority_queue<Node*, vector<Node*>, NodeCompare> tmp = beam;
+  void printBeam(priority_queue<Path*, vector<Path*>, PathCompare> beam){
+    priority_queue<Path*, vector<Path*>, PathCompare> tmp = beam;
     cout<<"The beam is:"<<endl;
     while(tmp.size()){
-      cout<<"("<<tmp.top()->getPosition()->getX()<<","<<tmp.top()->getPosition()->getY()<<") : "<<tmp.top()->getCurrentFvalue()<<endl;
+      cout<<tmp.top()->getCost()<<endl;
       tmp.pop();
     }
   }
@@ -174,18 +203,16 @@ public:
     return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed);
   }
 
-  //TODO There is a bug here result gives always 0.
-  // point go_to
   double meeting_avoidance(Path* current, Node* go_to, double speed){
-    double expectedArrival = time(nullptr) + (current->path_length()/speed)*60*60;
-    double result = 0;
+    double expectedArrival = time(0) + (current->path_length()/speed)*60*60;
+    double result = current->getCost();
     for(auto const& x : *(go_to->getTakenAgents())){
-      //cout<<"Taken Agent"<<endl;
-      //cout<<x.first<<endl;
-      //cout<<x.second<<endl;
       if(expectedArrival > x.second + speed) continue;
-      result += sqrt( pow(expectedArrival, 2) + pow(x.second,2));
+      current->increase_meeting_risk_lvl();
+      result = pow(result,current->get_meeting_risk_lvl());
     }
+    
+    if(isinf((float)result)) return 0; //if result is too big then choose the path with collision
     return result;
   }
 

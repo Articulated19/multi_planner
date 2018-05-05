@@ -24,6 +24,7 @@ private:
     vector<Node*>* path;
     double cost;
     int length;
+    int meeting_risk_lvl;
     void printPath(vector<Node*>*);
     
 public:
@@ -33,11 +34,14 @@ public:
     int path_length();
     double getCost();
     void setCost(double);
+    void increaseCost(double);
     Node* fst();
     void print();
     void addNode(Node*);
     vector<Node*>* getPath();
     Path* addNodeAndClone(Node*);
+    void increase_meeting_risk_lvl();
+    int get_meeting_risk_lvl();
     bool equals(Path*);
 };
 
