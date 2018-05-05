@@ -25,8 +25,13 @@ public:
   int visited = 0; // Used for measuring
   int collisions = 0;
 
-  Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
+  void resetResults(){
     visited = 0;
+    collisions = 0;
+  }
+
+  Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
+    resetResults();
     //cout << "Getting startnode.."<<endl;
     Node* startnode = getNode(startpoint);
     //cout<< "Startnode: " << startnode->getPosition()->getX() << ", " << startnode->getPosition()->getY()<<endl;
@@ -96,7 +101,7 @@ public:
   };
 
   Point2D** beamSearch(int id, double speed, int beamSize, Point2D* startpoint, Point2D* endpoint){
-    visited = 0;
+    resetResults();
     Node* startnode = getNode(startpoint);
     startnode->setCurrentFvalue(manhattan_heuristics(startpoint,endpoint));
     Node* endnode = getNode(endpoint);
@@ -143,22 +148,47 @@ public:
   }
 
   Point2D** backtrace(int id, double speed, Path* result){
-    int pathSize = result->path_length();
+    //int pathSize = result->path_length();
     vector<Node*>* v = result->getPath();
-    pathSize--;
-    Node* current = v->back();
-    while(1){
-      current->take(id,pathSize+1,speed);
-      path[pathSize] = current->getPosition();
-      pathSize--;
+    vector<Node*>* vPath = new vector<Node*>();
+    bool foundCollision = false;
+    while(v->size()){
+      Node* n = v->back();
       v->pop_back();
-      if(v->size())
-        current = v->back();
+      if(n->is_end_node()){
+        delete vPath;
+        vPath = new vector<Node*>();
+        cout<<"Deleting"<<endl;
+        foundCollision = true;
+      } else {
+        cout<<"Added to vPath"<<endl;
+        vPath->push_back(n);
+      }
+    }    
+    
+    //pathSize--;
+    int i = 0;
+    Node* current = vPath->back();
+    while(1){
+      current->take(id,i+1,speed);
+      path[i] = current->getPosition();
+      i++;
+      vPath->pop_back();
+      if(vPath->size()){
+        current = vPath->back();
+      }
       else
+      {
+        current->enableEndNode();
+        if(foundCollision){
+          collisions++;
+          Gui::drawError(current->getPosition());
+        }
         break;
+      }
     }
     return path;
-}
+  }
 
   void printBeam(priority_queue<Path*, vector<Path*>, PathCompare> beam){
     priority_queue<Path*, vector<Path*>, PathCompare> tmp = beam;
@@ -173,8 +203,6 @@ public:
     return manhattan_heuristics(point->getPosition(), goal->getPosition()) + meeting_avoidance(current, point, speed);
   }
 
-  //TODO There is a bug here result gives always 0.
-  // point go_to
   double meeting_avoidance(Path* current, Node* go_to, double speed){
     double expectedArrival = time(0) + (current->path_length()/speed)*60*60;
     double result = current->getCost();

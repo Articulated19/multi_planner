@@ -16,6 +16,7 @@ Node::Node(Point2D** neighbours, Point2D* pos){
     takenAgents = new map<int,double>;
     taken = 0;
     treeSize = 1;
+    isEndNode = false;
 }
 
 Node::~Node(){
@@ -94,6 +95,18 @@ map<int,double>* Node::getTakenAgents(){
 
 bool Node::hasParent(){
   return parent;
+}
+
+bool Node::is_end_node(){
+  return isEndNode;
+}
+
+void Node::enableEndNode(){
+  isEndNode = true;
+}
+
+void Node::disableEndNode(){
+  isEndNode = false;
 }
 
 bool Node::equals(Node* target){

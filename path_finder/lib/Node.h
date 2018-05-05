@@ -25,6 +25,7 @@ private:
     int treeSize;
     double currentFvalue;
     int taken;
+    bool isEndNode;
 
 
 public:
@@ -41,6 +42,9 @@ public:
     void setCurrentFvalue(double);
     double getCurrentFvalue();
     map<int,double>* getTakenAgents();
+    bool is_end_node();
+    void enableEndNode();
+    void disableEndNode();
 
     bool hasParent();
     bool equals(Node*);
