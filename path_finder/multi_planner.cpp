@@ -158,10 +158,8 @@ public:
       if(n->is_end_node()){
         delete vPath;
         vPath = new vector<Node*>();
-        cout<<"Deleting"<<endl;
         foundCollision = true;
       } else {
-        cout<<"Added to vPath"<<endl;
         vPath->push_back(n);
       }
     }    

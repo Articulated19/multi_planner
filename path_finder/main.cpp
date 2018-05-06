@@ -245,6 +245,64 @@ int main(int argc, const char * argv[]) {
     }
   }
 
+  if(argc == 4){
+    string cmd = argv[1];
+    if(cmd.compare("-test") == 0){
+      string world = argv[2];
+      int nrtests = stoi(argv[3]);
+
+      Point2D* starts[nrtests];
+      Point2D* ends[nrtests];
+      srand(time(NULL));
+      for(int i = 0; i < nrtests; i++){
+        starts[i] = planner->graph[rand() % 313]->getPosition();
+        ends[i] = planner->graph[rand() % 313]->getPosition();
+      }
+  
+      Gui* gui[2];
+      for(int alg = 0; alg < 2; alg++){
+        cout<<"Running Tests"<<endl;
+        double totalTime = 0;
+        gui[alg] = new Gui();
+        std::thread windowthread(&gui[alg]->createWindow);
+        usleep(1000000);
+        for(int i = 0; i < nrtests; i++){
+          gui[alg]->drawStartEnd(starts[i], ends[i]);
+          Point2D** path;
+          double time = 0;
+          if(alg){ 
+            clock_t begin = clock();
+            path = planner->beamSearch(i+1, speed, beamSize, starts[i], ends[i]);
+            clock_t end = clock();
+            time = double(end - begin) / CLOCKS_PER_SEC;
+          }else{
+            clock_t begin = clock();
+            path = planner->getPath(i+1, starts[i], ends[i]);
+            clock_t end = clock();
+            time = double(end - begin) / CLOCKS_PER_SEC;
+          }
+          totalTime += time;
+          cout<<"*****************************Test number "<<i+1<<"*****************************"<<endl;
+          cout<<"Time:"<<time<<endl;
+          cout<<"Number of nodes visited: "<<planner->visited<<endl;
+          cout<<"***********************************************************************"<<endl;
+          cout<<endl;
+          gui[alg]->drawPath(path);
+          usleep(5000000);
+        }
+        cout<<endl;
+        cout<<"*****************************TOTAL*****************************"<<endl;
+        cout<<"Total time:"<<totalTime<<endl;
+        cout<<"Number of Collisions: "<<countCollisions(planner) + planner->collisions<<endl;
+        cout<<"***********************************************************************"<<endl;
+        windowthread.detach();
+        usleep(1000000);
+      }
+         
+        while(1);
+    }
+  }
+
   else {
     cout << "Wrong number of arguments" <<endl;
   }
