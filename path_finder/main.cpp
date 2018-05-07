@@ -25,16 +25,21 @@ double speed = 10;
 
 int main(int argc, const char * argv[]) {
 
-  multi_planner* planner = new multi_planner();
   //std::cout<<"planner spawned"<<endl;
-
-  planner->createGraph();
+  multi_planner* planner = new multi_planner();
   //planner->checkTakenNodes();
-
   if(argc >= 4){
     string cmd = argv[1];
     if(cmd.compare("-test") == 0){
       string world = argv[2];
+      if(world.compare("small") == 0)
+        planner->setWorld(0);
+      else if(world.compare("medium") == 0)
+        planner->setWorld(1);
+      else if(world.compare("large") == 0)
+        planner->setWorld(2);
+      
+      planner->createGraph();
       int nrtests = stoi(argv[3]);
       
       const char ** checkArgs = argv;

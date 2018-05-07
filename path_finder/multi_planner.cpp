@@ -20,11 +20,24 @@ using namespace std;
 class multi_planner{
 
 public:
-  Node* graph[313];
-  Point2D* path[313];
+  Node* graph[1000];
+  Point2D* path[1000];
+  int world = 0;
   int visited = 0; // Used for measuring
+  unsigned int graphSize = 313;
   int collisions = 0;
   int pathCapacity = 0;
+  
+  void setWorld(int n){
+    if(n == 0){
+      graphSize = 313;
+    } else if(n == 1){
+      graphSize = 363;
+    } else if(n == 2){
+      graphSize = 0;
+    }
+    world = n;
+  }
 
   void resetResults(){
     visited = 0;
@@ -225,7 +238,7 @@ public:
     //Node* result;
       double pointX = point->getX();
       double pointY = point->getY();
-      for(unsigned int i = 0; i < 313 - 1; i++){
+      for(unsigned int i = 0; i < graphSize - 1; i++){
         if(graph[i]->getPosition()->getX() == pointX && graph[i]->getPosition()->getY() == pointY) {
           return graph[i];
         }
@@ -294,7 +307,18 @@ public:
   }
 
   void createGraph(){
-    ifstream input("graph.txt");
+    string graph_name;
+    if(world == 1){
+      graph_name = "medium";
+    }
+    else if(world == 2){
+      graph_name = "large";
+    }
+    else if(world == 0){
+      graph_name = "small";
+    }
+
+    ifstream input(graph_name + ".txt");
     double pos[5];
 
     string arr[2000];
