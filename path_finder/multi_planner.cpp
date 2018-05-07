@@ -177,13 +177,16 @@ public:
     //pathSize--;
     int i = 0;
     Node* current = vPath->back();
+    int backStep = 0;
+    if(vPath->size() > 3 && foundCollision)
+      backStep = 3;
     while(1){
       current->take(id,i+1,speed);
       path[i] = current->getPosition();
       pathCapacity++;
       i++;
       vPath->pop_back();
-      if(vPath->size()){
+      if(vPath->size() - backStep){
         current = vPath->back();
       }
       else
@@ -314,7 +317,7 @@ public:
     else if(world == 2){
       graph_name = "large";
     }
-    else if(world == 0){
+    else{
       graph_name = "small";
     }
 

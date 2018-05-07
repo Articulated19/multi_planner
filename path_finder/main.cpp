@@ -128,7 +128,7 @@ int main(int argc, const char * argv[]) {
         //cout<<"i="<<i<<" nrtests="<<nrtests<<endl;
         exit(0);
       }
-    
+    planner->createGraph();
     int id = stoi(argv[1]);
     double startx = atof(argv[2]);
     double starty = atof(argv[3]);
@@ -173,7 +173,7 @@ int main(int argc, const char * argv[]) {
   //gui->drawPath(path);
 
   if(argc == 1){
-
+    planner->createGraph();
     Gui* gui = new Gui();
     std::thread windowthread(&gui->createWindow);
       while(1){
@@ -227,77 +227,14 @@ int main(int argc, const char * argv[]) {
   }
 
   if(argc == 2){
+    planner->createGraph();
     std::string cmd = argv[1];
     if(cmd.compare("-clear") == 0){
       system("exec rm -r data/*");
       cout << "Cleared path data"<<endl;
-    } else if(cmd.compare("-test") == 0){
-      int maxTests = 7;
-      Gui* gui = new Gui();
-      std::thread windowthread(&gui->createWindow);
-      int nrTests;
-      char alg;
-      cout<<"Number of tests(max "<<maxTests<<"):";
-      cin>>nrTests;
-      cout<<"Choose pathfinder((b)eam search or (g)reedy breath first search):";
-      cin>>alg;
-
-      Point2D* starts[maxTests];
-      Point2D* ends[maxTests];
-  
-        starts[0] = new Point2D(212.2,135.1);
-        ends[0] = new Point2D(275.2,449.2);
-        starts[1] = new Point2D(77,281.8);
-        ends[1] = new Point2D(327.6,585);
-        starts[2] = new Point2D(77, 467.2);
-        ends[2] = new Point2D(365, 684.6);
-        starts[3] = new Point2D(325.8, 665);
-        ends[3] = new Point2D(116.6, 426);
-        starts[4] = new Point2D(365, 225);
-        ends[4] = new Point2D(77, 714.5);
-        starts[5] = new Point2D(179.1, 419.5);
-        ends[5] = new Point2D(327.6, 585);
-        starts[6] = new Point2D(366.9, 584.3);
-        ends[6] = new Point2D(179.1, 381.4);
-
-        if(nrTests > maxTests)
-          nrTests = maxTests;
-  
-        cout<<"Running Tests"<<endl;
-        double totalTime = 0;
-        for(int i = 0; i < nrTests; i++){
-          gui->drawStartEnd(starts[i], ends[i]);
-          Point2D** path;
-          double time = 0;
-          if(alg == 'b'){ 
-            clock_t begin = clock();
-            path = planner->beamSearch(i+1, speed, beamSize, starts[i], ends[i]);
-            clock_t end = clock();
-            time = double(end - begin) / CLOCKS_PER_SEC;
-          }else if(alg == 'g'){
-            clock_t begin = clock();
-            path = planner->getPath(i+1, starts[i], ends[i]);
-            clock_t end = clock();
-            time = double(end - begin) / CLOCKS_PER_SEC;
-          }
-          totalTime += time;
-          cout<<"*****************************Test number "<<i+1<<"*****************************"<<endl;
-          cout<<"Time:"<<time<<endl;
-          cout<<"Number of nodes visited: "<<planner->visited<<endl;
-          cout<<"***********************************************************************"<<endl;
-          cout<<endl;
-          gui->drawPath(path);
-          usleep(5000000);
-        }
-        cout<<endl;
-        cout<<"*****************************TOTAL*****************************"<<endl;
-        cout<<"Total time:"<<totalTime<<endl;
-        cout<<"Number of Collisions: "<<countCollisions(planner) + planner->collisions<<endl;
-        cout<<"***********************************************************************"<<endl;
-        
-         
-        while(1);
-    } else if (cmd.compare("-random") == 0){
+    }
+     else if (cmd.compare("-random") == 0){
+      planner->createGraph();
       cout<<"Printing Random Paths"<<endl;
       Gui* gui = new Gui();
       std::thread windowthread(&gui->createWindow);
@@ -331,6 +268,7 @@ int main(int argc, const char * argv[]) {
   }
 
   if(argc == 3){
+    planner->createGraph();
     std::string cmd = argv[2];
     std::string input = argv[1];
     if(cmd.compare("-clear") == 0){
