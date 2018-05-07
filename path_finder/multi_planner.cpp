@@ -24,10 +24,12 @@ public:
   Point2D* path[313];
   int visited = 0; // Used for measuring
   int collisions = 0;
+  int pathCapacity = 0;
 
   void resetResults(){
     visited = 0;
     collisions = 0;
+    pathCapacity = 0;
   }
 
   Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
@@ -69,7 +71,6 @@ public:
           }
         }
         else{
-          collisions++;
           //cout<<"Node was taken!"<<endl;
         }
       }
@@ -80,19 +81,15 @@ public:
       else{
         /* Did not find a path to goal */
         //cout << "Could not find a path to goal"<<endl;
+        collisions++;
         Gui::drawError(current->getPosition());
         return path;
       }
       i++;
+      pathCapacity++;
     }
     return path;
   }
-
-  struct NodeCompare{
-    bool operator()(Node* n1, Node* n2){
-      return n1->getCurrentFvalue() > n2->getCurrentFvalue();
-    }
-  };
 
   struct PathCompare{
     bool operator()(Path* n1, Path* n2){
@@ -170,6 +167,7 @@ public:
     while(1){
       current->take(id,i+1,speed);
       path[i] = current->getPosition();
+      pathCapacity++;
       i++;
       vPath->pop_back();
       if(vPath->size()){
