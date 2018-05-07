@@ -14,7 +14,7 @@
 
 using namespace std;
 
-#include "Gui.h"
+//#include "Gui.h"
 #include "lib/Node.cpp"
 
 class multi_planner{
@@ -80,7 +80,7 @@ public:
       else{
         /* Did not find a path to goal */
         //cout << "Could not find a path to goal"<<endl;
-        Gui::drawError(current->getPosition());
+        //Gui::drawError(current->getPosition());
         return path;
       }
       i++;
@@ -182,7 +182,7 @@ public:
         current->enableEndNode();
         if(foundCollision){
           collisions++;
-          Gui::drawError(current->getPosition());
+          //Gui::drawError(current->getPosition());
         }
         break;
       }
