@@ -20,7 +20,7 @@ using namespace std;
 int countCollisions(multi_planner*);
 void printPath(Point2D**);
 
-int beamSize = 10000;
+int beamSize = 100;
 double speed = 10;
 
 int main(int argc, const char * argv[]) {
@@ -32,12 +32,19 @@ int main(int argc, const char * argv[]) {
     string cmd = argv[1];
     if(cmd.compare("-test") == 0){
       string world = argv[2];
-      if(world.compare("small") == 0)
+      int worldSize = 0;
+      if(world.compare("small") == 0){
+        worldSize = 313;
         planner->setWorld(0);
-      else if(world.compare("medium") == 0)
+      }
+      else if(world.compare("medium") == 0){
+        worldSize = 655;
         planner->setWorld(1);
-      else if(world.compare("large") == 0)
+      }
+      else if(world.compare("large") == 0){
+        worldSize = 0;
         planner->setWorld(2);
+      }
       
       planner->createGraph();
       int nrtests = stoi(argv[3]);
@@ -61,8 +68,8 @@ int main(int argc, const char * argv[]) {
       Point2D* ends[nrtests];
       srand(time(NULL));
       for(int i = 0; i < nrtests; i++){
-        starts[i] = planner->graph[rand() % 313]->getPosition();
-        ends[i] = planner->graph[rand() % 313]->getPosition();
+        starts[i] = planner->graph[rand() % worldSize]->getPosition();
+        ends[i] = planner->graph[rand() % worldSize]->getPosition();
       }
   
         cout<<"Running Tests"<<endl;
@@ -305,3 +312,4 @@ void printPath(Point2D** path){
     path++;
   }
 }
+

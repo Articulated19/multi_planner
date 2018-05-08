@@ -32,7 +32,7 @@ public:
     if(n == 0){
       graphSize = 313;
     } else if(n == 1){
-      graphSize = 363;
+      graphSize = 655;
     } else if(n == 2){
       graphSize = 0;
     }
@@ -324,7 +324,7 @@ public:
     ifstream input(graph_name + ".txt");
     double pos[5];
 
-    string arr[2000];
+    string arr[5000];
     string wline;
     int num_lines = 0;
 
@@ -384,3 +384,4 @@ public:
       //cout << "Reading map completed." <<endl;
     }
 };
+
