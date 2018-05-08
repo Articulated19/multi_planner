@@ -34,7 +34,7 @@ public:
     } else if(n == 1){
       graphSize = 655;
     } else if(n == 2){
-      graphSize = 0;
+      graphSize = 997;
     }
     world = n;
   }

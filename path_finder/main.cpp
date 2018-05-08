@@ -42,7 +42,7 @@ int main(int argc, const char * argv[]) {
         planner->setWorld(1);
       }
       else if(world.compare("large") == 0){
-        worldSize = 0;
+        worldSize = 997;
         planner->setWorld(2);
       }
       
