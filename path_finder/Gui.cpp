@@ -5,8 +5,8 @@
 
 using namespace std;
 
-Point2D** Gui::paths[500];
-Point2D** Gui::todraw[500];
+Point2D** Gui::paths[1000];
+Point2D** Gui::todraw[1000];
 Point2D*  Gui::errors[10];
 Point2D*  Gui::startend[10];
 sf::Color Gui::color;
@@ -16,7 +16,7 @@ int errorcount = 0;
 
 void Gui::createWindow()
 {
-  sf::RenderWindow window(sf::VideoMode(560, 965), "mutli_planner");
+  sf::RenderWindow window(sf::VideoMode(1000, 965), "mutli_planner");
   window.setFramerateLimit(20);
   sf::Texture bg;
   /*
@@ -26,7 +26,6 @@ void Gui::createWindow()
   }
   */
   sf::Sprite background(bg);
-
   window.clear();
   //window.draw(background);
   while (window.isOpen())
@@ -119,6 +118,7 @@ void Gui::createWindow()
     }
     window.display();
   }
+  std::terminate();
 }
 
 void Gui::drawPath(Point2D** path)

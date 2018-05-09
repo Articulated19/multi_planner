@@ -33,7 +33,7 @@ Point2D* Node::getPosition(){
 }
 
 int Node::isTaken(int id){
-    if(taken == 0 || taken == id) {
+    if(taken == 0/* || taken == id*/) {
       return 0;
     } else {
       return 1;

@@ -20,14 +20,29 @@ using namespace std;
 class multi_planner{
 
 public:
-  Node* graph[313];
-  Point2D* path[313];
+  Node* graph[1000];
+  Point2D* path[1000];
+  int world = 0;
   int visited = 0; // Used for measuring
+  unsigned int graphSize = 313;
   int collisions = 0;
+  int pathCapacity = 0;
+  
+  void setWorld(int n){
+    if(n == 0){
+      graphSize = 313;
+    } else if(n == 1){
+      graphSize = 655;
+    } else if(n == 2){
+      graphSize = 997;
+    }
+    world = n;
+  }
 
   void resetResults(){
     visited = 0;
     collisions = 0;
+    pathCapacity = 0;
   }
 
   Point2D** getPath(int id, Point2D* startpoint, Point2D* endpoint){
@@ -69,7 +84,6 @@ public:
           }
         }
         else{
-          collisions++;
           //cout<<"Node was taken!"<<endl;
         }
       }
@@ -80,19 +94,15 @@ public:
       else{
         /* Did not find a path to goal */
         //cout << "Could not find a path to goal"<<endl;
+        collisions++;
         Gui::drawError(current->getPosition());
         return path;
       }
       i++;
+      pathCapacity++;
     }
     return path;
   }
-
-  struct NodeCompare{
-    bool operator()(Node* n1, Node* n2){
-      return n1->getCurrentFvalue() > n2->getCurrentFvalue();
-    }
-  };
 
   struct PathCompare{
     bool operator()(Path* n1, Path* n2){
@@ -158,10 +168,8 @@ public:
       if(n->is_end_node()){
         delete vPath;
         vPath = new vector<Node*>();
-        cout<<"Deleting"<<endl;
         foundCollision = true;
       } else {
-        cout<<"Added to vPath"<<endl;
         vPath->push_back(n);
       }
     }    
@@ -169,12 +177,16 @@ public:
     //pathSize--;
     int i = 0;
     Node* current = vPath->back();
+    int backStep = 0;
+    if(vPath->size() > 3 && foundCollision)
+      backStep = 3;
     while(1){
       current->take(id,i+1,speed);
       path[i] = current->getPosition();
+      pathCapacity++;
       i++;
       vPath->pop_back();
-      if(vPath->size()){
+      if(vPath->size() - backStep){
         current = vPath->back();
       }
       else
@@ -229,7 +241,7 @@ public:
     //Node* result;
       double pointX = point->getX();
       double pointY = point->getY();
-      for(unsigned int i = 0; i < 313 - 1; i++){
+      for(unsigned int i = 0; i < graphSize - 1; i++){
         if(graph[i]->getPosition()->getX() == pointX && graph[i]->getPosition()->getY() == pointY) {
           return graph[i];
         }
@@ -298,10 +310,21 @@ public:
   }
 
   void createGraph(){
-    ifstream input("graph.txt");
+    string graph_name;
+    if(world == 1){
+      graph_name = "medium";
+    }
+    else if(world == 2){
+      graph_name = "large";
+    }
+    else{
+      graph_name = "small";
+    }
+
+    ifstream input(graph_name + ".txt");
     double pos[5];
 
-    string arr[2000];
+    string arr[5000];
     string wline;
     int num_lines = 0;
 
@@ -361,3 +384,4 @@ public:
       //cout << "Reading map completed." <<endl;
     }
 };
+
