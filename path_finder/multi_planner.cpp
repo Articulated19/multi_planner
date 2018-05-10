@@ -94,8 +94,9 @@ public:
       else{
         /* Did not find a path to goal */
         //cout << "Could not find a path to goal"<<endl;
-        collisions++;
-        Gui::drawError(current->getPosition());
+        if(id != current->getTaken())
+          collisions++;
+        //Gui::drawError(current->getPosition());
         return path;
       }
       i++;
@@ -194,7 +195,7 @@ public:
         current->enableEndNode();
         if(foundCollision){
           collisions++;
-          Gui::drawError(current->getPosition());
+          //Gui::drawError(current->getPosition());
         }
         break;
       }

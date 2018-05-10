@@ -80,14 +80,14 @@ int main(int argc, const char * argv[]) {
         if(pid != 0){
           waitpid(pid,NULL,0);
         }
-        Gui* gui;
-        gui = new Gui();
-        std::thread windowthread(&gui->createWindow);
-        usleep(1000000);
+        //Gui* gui;
+        //gui = new Gui();
+        //std::thread windowthread(&gui->createWindow);
+        //usleep(1000000);
         string alg = "";
         for(int i = 0; i < nrtests; i++){
-          if(showGraph)
-            gui->drawStartEnd(starts[i], ends[i]);
+          //if(showGraph)
+            //gui->drawStartEnd(starts[i], ends[i]);
           Point2D** path;
           double time = 0;
           if(pid){
@@ -118,10 +118,10 @@ int main(int argc, const char * argv[]) {
               cout<<"***********************************************************************"<<endl;
               cout<<endl;
           }
-          if(showGraph){
-            gui->drawPath(path);
-            usleep(5000000);
-          }
+          //if(showGraph){
+            //gui->drawPath(path);
+            //usleep(5000000);
+          //}
         }
         cout<<endl;
         cout<<"*****************************TOTAL*****************************"<<endl;
