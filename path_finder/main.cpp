@@ -26,9 +26,9 @@ int main(int argc, const char * argv[]) {
   //std::cout<<"planner spawned"<<endl;
 
   planner->createGraph();
-  //planner->checkTakenNodes();
+  planner->checkTakenNodes();
 
-  if(argc >= 5){
+  if(argc > 5){
     int id = stoi(argv[1]);
     double startx = atof(argv[2]);
     double starty = atof(argv[3]);
@@ -87,6 +87,68 @@ int main(int argc, const char * argv[]) {
     }
   }
 
+  if(argc == 5){
+    std::string id = argv[1];
+    std::string cmd = argv[2];
+    double point_x = atof(argv[3]);
+    double point_y = atof(argv[4]);
+
+    if(cmd.compare("-clear") == 0){
+      string filename = "data/path_" + id + ".txt";
+      ifstream input(filename);
+      string wline;
+      string arr[1000];
+      bool rewrite = false;
+      int i = 0;
+
+      if(input.is_open()){
+        while(!input.eof()){
+          getline(input, wline);
+          //std::replace(wline.begin(), wline.end(), ',' , ' ');
+          if(i == 0){
+            double pos[2];
+            std::replace(wline.begin(), wline.end(), ',', ' ');
+            stringstream ss(wline);
+            double tmp;
+            int x = 0;
+            while(ss >> tmp){
+              cout<<tmp<<endl;
+              pos[x] = tmp;
+              x++;
+            }
+            double x_diff = pos[0] - point_x;
+            double y_diff = pos[1] - point_y;
+            cout<<"x_diff: " <<x_diff<<endl;
+            cout<<"y_diff: " <<y_diff<<endl;
+            /* Node has likely been passed */
+            if(x_diff > -5 && x_diff < 5 && y_diff > -5 && y_diff < 5){
+              cout<<"Node was likely passed"<<endl;
+              i++;
+              rewrite = true;
+              continue;
+            }
+            /* This node has probably not been passed yet." */
+            else{
+              cout<<"Node likely NOT passed yet."<<endl;
+              break;
+            }
+          }
+          arr[i-1] = wline;
+          //cout<<"added to arr: "<<wline<<endl;
+          i++;
+        }
+      }
+      input.close();
+      if(rewrite){
+        ofstream outfile;
+        outfile.open(filename);
+        for(int k = 0; k < i; k++){
+          outfile<<arr[k]<<endl;
+        }
+        outfile.close();
+      }
+    }
+  }
   else {
     cout << "Wrong number of arguments" <<endl;
   }
