@@ -35,7 +35,9 @@ public:
     Point2D* getPosition();
 
     int isTaken(int);
+    int getTaken();
     int getTreeSize();
+
     void take(int);
     void take(int,int,double);
     void remove(int);

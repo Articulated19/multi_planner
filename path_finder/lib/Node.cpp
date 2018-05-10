@@ -40,6 +40,10 @@ int Node::isTaken(int id){
     }
 }
 
+int Node::getTaken(){
+  return taken;
+}
+
 int Node::getTreeSize(){
   return treeSize;
 }
